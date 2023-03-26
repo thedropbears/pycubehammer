@@ -1,3 +1,4 @@
+### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -127,3 +128,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+### WPILib ###
+networktables.json
+simgui.json
+simgui-ds.json
+# Simulation GUI and other tools window save file
+*-window.json
