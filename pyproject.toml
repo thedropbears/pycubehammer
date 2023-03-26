@@ -9,6 +9,13 @@ exclude_lines = [
 	"if typing.TYPE_CHECKING:",
 ]
 
+[tool.mypy]
+check_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unreachable = true
+strict_equality = true
+
 [tool.pytest.ini_options]
 addopts = "--strict-markers"
 faulthandler_timeout = 15
