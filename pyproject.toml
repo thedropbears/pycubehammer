@@ -17,6 +17,6 @@ testpaths = ["tests"]
 xfail_strict = true
 
 [tool.ruff]
-select = ["E", "F", "B", "UP", "C4", "SIM"]
+select = ["E", "F", "B", "UP", "C4", "I001", "SIM"]
 ignore = ["E501"]
 target-version = "py39"
