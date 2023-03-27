@@ -1,6 +1,6 @@
 from enum import Enum
 
-from magicbot import StateMachine, state
+from magicbot import StateMachine, default_state, state
 
 from components.intake import Intake
 from components.shooter import Shooter
@@ -45,8 +45,7 @@ class ShooterController(StateMachine):
         # next state tracking
         pass
 
-    # does this need to be must finish so it always runs or should we call engage when we want this state to run
-    @state(first=True)
+    @default_state
     def tracking(self) -> None:
         # if turret not indexed
         # return
