@@ -1,6 +1,6 @@
 from enum import Enum
 
-from magicbot import state, StateMachine
+from magicbot import StateMachine, state
 
 from components.intake import Intake
 from components.shooter import Shooter
@@ -15,7 +15,7 @@ class GoalHeight(Enum):
 
 
 class ShooterController(StateMachine):
-    intake: Intake
+    intake_component: Intake
     shooter_component: Shooter
     tilt: Tilt
     turret: Turret
