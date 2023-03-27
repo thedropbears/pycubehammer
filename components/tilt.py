@@ -1,4 +1,4 @@
-class Pitcher:
+class Tilt:
     GEAR_RATIO: float
     ANGLE_ERROR_TOLERANCE: float
 
