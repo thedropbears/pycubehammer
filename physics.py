@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import math
+import typing
 
 import ctre
 from pyfrc.physics.core import PhysicsInterface
@@ -8,8 +11,10 @@ from wpilib.simulation import (
 from wpimath.kinematics import SwerveDrive4Kinematics
 
 from components.chassis import SwerveModule
-from robot import Robot
 from utilities.ctre import FALCON_CPR, VERSA_ENCODER_CPR
+
+if typing.TYPE_CHECKING:
+    from robot import Robot
 
 
 class SimpleTalonFXMotorSim:
