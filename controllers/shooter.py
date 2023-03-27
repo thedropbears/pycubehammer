@@ -13,6 +13,7 @@ class GoalHeight(Enum):
     MID = 1
     LOW = 0
 
+
 class ShooterController(StateMachine):
     intake: Intake
     shooter_component: Shooter
@@ -25,7 +26,7 @@ class ShooterController(StateMachine):
     def __init__(self) -> None:
         # set default preference for goal height
         pass
-    
+
     @state(must_finish=True)
     def preparing_intake(self) -> None:
         # send pitch and turret to angle
@@ -44,7 +45,8 @@ class ShooterController(StateMachine):
         # next state tracking
         pass
 
-    @state(first=True) # does this need to be must finish so it always runs or should we call engage when we want this state to run
+    # does this need to be must finish so it always runs or should we call engage when we want this state to run
+    @state(first=True)
     def tracking(self) -> None:
         # if turret not indexed
         # return
@@ -60,7 +62,6 @@ class ShooterController(StateMachine):
         # update flywheel speed
         # update turret angle
         # update tilt angle
-
 
         # if tilt ready and turret ready and flywheels at speed
         # shoot
