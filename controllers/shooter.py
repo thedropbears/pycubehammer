@@ -14,10 +14,10 @@ class GoalHeight(Enum):
     LOW = 0
 
 class ShooterController(StateMachine):
-    # shooter
-    # Tilt
-    # turret
-    # intake
+    intake: Intake
+    shooter_component: Shooter
+    tilt: Tilt
+    turret: Turret
 
     INTAKE_AZIMUTH: float
     INTAKE_TILT: float
