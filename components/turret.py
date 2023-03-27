@@ -1,6 +1,3 @@
-import math
-
-
 class Turret:
     # GEAR_RATIO: float
     # ANGLE_ERROR_TOLERANCE: float
@@ -27,7 +24,7 @@ class Turret:
     def at_angle(self) -> bool:
         # return abs(current angle - reference) < Tolerance
         # This could also be done inside the motor controller depending on how it works
-        pass
+        return False
 
     def find_index(self) -> None:
         # configure turret to rotate until it finds an index
