@@ -1,7 +1,8 @@
-class Tilt:
-    GEAR_RATIO: float
-    ANGLE_ERROR_TOLERANCE: float
+GEAR_RATIO: float
+ANGLE_ERROR_TOLERANCE: float
 
+
+class Tilt:
     # motor: Neo550 #This will need to change to the proper motor controller type
     # encoder: This will likely be an absolute encoder like the one we used on the arm.
     # ^^ note for this we want to use the absolute api from the start so we dont have a disaster at comp

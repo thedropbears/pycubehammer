@@ -49,15 +49,15 @@ class PhysicsEngine:
     def __init__(self, physics_controller: PhysicsInterface, robot: Robot):
         self.physics_controller = physics_controller
 
-        self.kinematics: SwerveDrive4Kinematics = robot.chassis.kinematics
-        self.swerve_modules: list[SwerveModule] = robot.chassis.modules
+        self.kinematics: SwerveDrive4Kinematics = robot.chassis_component.kinematics
+        self.swerve_modules: list[SwerveModule] = robot.chassis_component.modules
 
         # Motors
         self.wheels = [
             SimpleTalonFXMotorSim(
                 module.drive, module.drive_ff.kV, 1 / module.DRIVE_MOTOR_REV_TO_METRES
             )
-            for module in robot.chassis.modules
+            for module in robot.chassis_component.modules
         ]
         self.steer = [
             SimpleTalonFXMotorSim(
@@ -65,7 +65,7 @@ class PhysicsEngine:
                 kV=1,  # TODO: get from sysid logs
                 rev_per_unit=1 / module.STEER_MOTOR_REV_TO_RAD,
             )
-            for module in robot.chassis.modules
+            for module in robot.chassis_component.modules
         ]
 
         self.imu = SimDeviceSim("navX-Sensor", 4)

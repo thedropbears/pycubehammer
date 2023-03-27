@@ -14,14 +14,16 @@ class GoalHeight(Enum):
     LOW = 0
 
 
+# Setpoints for intaking state
+INTAKE_AZIMUTH: float
+INTAKE_TILT: float
+
+
 class ShooterController(StateMachine):
     intake_component: Intake
     shooter_component: Shooter
-    tilt: Tilt
-    turret: Turret
-
-    INTAKE_AZIMUTH: float
-    INTAKE_TILT: float
+    tilt_component: Tilt
+    turret_component: Turret
 
     def __init__(self) -> None:
         # set default preference for goal height
