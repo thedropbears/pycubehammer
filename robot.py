@@ -21,7 +21,7 @@ class Robot(magicbot.MagicRobot):
     turret_component: Turret
 
     # Controllers
-    shooter_controller: ShooterController
+    # shooter_controller: ShooterController
 
     SPIN_RATE = 4
     MAX_SPEED = magicbot.tunable(Chassis.max_wheel_speed * 0.95)

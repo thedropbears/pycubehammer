@@ -26,7 +26,7 @@ class CancoderIds(enum.IntEnum):
 
 @enum.unique
 class SparkMaxIds(enum.IntEnum):
-    pass
+    turret_motor = 1
 
 
 @enum.unique
@@ -41,4 +41,6 @@ class PwmChannels(enum.IntEnum):
 
 @enum.unique
 class DioChannels(enum.IntEnum):
-    pass
+    positive_turret_switch = 1
+    negative_turret_switch = 2
+
