@@ -1,6 +1,7 @@
-class Shooter:
-    GEAR_RATIO: float  # whatever this is
+GEAR_RATIO: float  # whatever this is
 
+
+class Shooter:
     # top_flywheel: whatever motor type this is
     # bottom flywheel: whatever motor type this is
     # neck_motor: whatever motor this is <- this refers to the back motor that pulls the cube away from the motors
