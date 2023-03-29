@@ -29,6 +29,14 @@ class ShooterController(StateMachine):
         # set default preference for goal height
         pass
 
+    @state(must_finish=True, first=True)
+    def waiting_until_index_found(self):
+        # do nothing
+
+        # if turret found index
+        # next state tracking
+        pass
+
     @state(must_finish=True)
     def preparing_intake(self) -> None:
         # send pitch and turret to angle
