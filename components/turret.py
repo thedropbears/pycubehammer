@@ -35,7 +35,7 @@ class Turret:
         )  # These could also be attached directly to the motor controller breakout board for interrupts
         self.encoder = self.motor.getEncoder()
         self.encoder.setPositionConversionFactor(GEAR_RATIO * tau)
-        self.encoder.setVelocityConversionFactor(GEAR_RATIO * tau)
+        self.encoder.setVelocityConversionFactor(GEAR_RATIO * tau * 60)
         rotation_contraints = TrapezoidProfileRadians.Constraints(
             maxVelocity=MAX_ANGULAR_VELOCITY, maxAcceleration=MAX_ANGULAR_ACCELERATION
         )
