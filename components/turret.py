@@ -1,4 +1,4 @@
-from math import pi, radians
+from math import pi, radians, tau
 from rev import CANSparkMax
 from wpilib import DigitalInput
 from wpimath.controller import ProfiledPIDControllerRadians
@@ -34,8 +34,8 @@ class Turret:
             DioChannels.negative_turret_switch
         )  # These could also be attached directly to the motor controller breakout board for interrupts
         self.encoder = self.motor.getEncoder()
-        self.encoder.setPositionConversionFactor(GEAR_RATIO)
-        self.encoder.setVelocityConversionFactor(GEAR_RATIO)
+        self.encoder.setPositionConversionFactor(GEAR_RATIO * tau)
+        self.encoder.setVelocityConversionFactor(GEAR_RATIO * tau)
         rotation_contraints = TrapezoidProfileRadians.Constraints(
             maxVelocity=MAX_ANGULAR_VELOCITY, maxAcceleration=MAX_ANGULAR_ACCELERATION
         )
