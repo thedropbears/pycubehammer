@@ -59,7 +59,9 @@ class Turret:
     def at_angle(self) -> bool:
         # return abs(current angle - reference) < Tolerance
         # This could also be done inside the motor controller depending on how it works
-        return abs(self.get_angle() - self.goal_angle) < ANGLE_ERROR_TOLERANCE
+        return (
+            abs(self.get_angle() - self.goal_angle) < ANGLE_ERROR_TOLERANCE
+        ) and self.index_found
 
     @feedback
     def at_positive_limit(self) -> bool:
