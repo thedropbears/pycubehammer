@@ -8,7 +8,7 @@ from ids import SparkMaxIds, DioChannels
 from magicbot import tunable, feedback
 
 
-GEAR_RATIO: float = 18 / 140
+GEAR_RATIO: float = (7 / 1) * (4 / 1) * (18 / 140)
 ANGLE_ERROR_TOLERANCE: float = radians(1)
 MAX_ANGULAR_VELOCITY: float = 1.0
 MAX_ANGULAR_ACCELERATION: float = 0.5
