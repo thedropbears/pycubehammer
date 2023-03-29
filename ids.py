@@ -43,4 +43,3 @@ class PwmChannels(enum.IntEnum):
 class DioChannels(enum.IntEnum):
     positive_turret_switch = 1
     negative_turret_switch = 2
-
