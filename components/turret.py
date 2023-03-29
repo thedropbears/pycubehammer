@@ -1,12 +1,12 @@
-from math import pi, radians, tau
+from math import radians, tau
+
+from magicbot import feedback, tunable
 from rev import CANSparkMax
 from wpilib import DigitalInput
 from wpimath.controller import ProfiledPIDControllerRadians
 from wpimath.trajectory import TrapezoidProfileRadians
-from ids import SparkMaxIds, DioChannels
 
-from magicbot import tunable, feedback
-
+from ids import DioChannels, SparkMaxIds
 
 GEAR_RATIO: float = (7 / 1) * (4 / 1) * (18 / 140)
 ANGLE_ERROR_TOLERANCE: float = radians(1)
