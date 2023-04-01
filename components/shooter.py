@@ -1,21 +1,31 @@
+from rev import CANSparkMax
+from wpilib import DigitalInput
+
+from ids import DioChannels, SparkMaxIds
+
 GEAR_RATIO: float  # whatever this is
 
 
 class Shooter:
-    # top_flywheel: whatever motor type this is
-    # bottom flywheel: whatever motor type this is
-    # neck_motor: whatever motor this is <- this refers to the back motor that pulls the cube away from the motors
-
     # loaded_switch Digital I/O <- in my head this has something to confirm when the shooter is correctly loaded
 
     def __init__(self) -> None:
         # create instances of hardware handles
+        self.top_flywheel = CANSparkMax(
+            SparkMaxIds.top_flywheel, CANSparkMax.MotorType.kBrushless
+        )
+        self.bottom_flywheel = CANSparkMax(
+            SparkMaxIds.bottom_flywheel, CANSparkMax.MotorType.kBrushless
+        )
+        self.back_motor = CANSparkMax(
+            SparkMaxIds.back_motor, CANSparkMax.MotorType.kBrushless
+        )
 
+        self.loaded_switch = DigitalInput(DioChannels.loaded_shooter)
         # initialise motor speed
         # initialise shooting
         # initialise last shooting
         # initialise loading
-        pass
 
     def set_flywheel_speed(self) -> None:
         # update internal motor speed setpoint
