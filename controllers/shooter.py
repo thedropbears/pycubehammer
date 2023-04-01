@@ -45,7 +45,7 @@ class ShooterController(StateMachine):
 
     @default_state
     def tracking(self) -> None:
-        if self.turret_component.find_index() is None:
+        if self.turret_component.find_index(): ###
             return
         self.shooter_component.set_flywheel_speed(1.0)
         self.turret_component.set_angle(0.0)
