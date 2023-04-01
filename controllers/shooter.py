@@ -13,11 +13,9 @@ class GoalHeight(Enum):
     MID = 1
     LOW = 0
 
-
 # Setpoints for intaking state
 INTAKE_AZIMUTH: float
 INTAKE_TILT: float
-
 
 class ShooterController(StateMachine):
     intake_component: Intake
@@ -59,24 +57,21 @@ class ShooterController(StateMachine):
 
         if self.tilt_component.at_angle() and self.turret_component.at_angle(): #and self.shooter_component.at_flywheel_speed():
             self.shooter_component.shoot()
-            self.next_state("tracking")
+            self.next_state("preparing_intake")
 
     def shoot(self) -> None:
-        self.next_state("shooting")
+        if self.tracking():
+            self.next_state("shooting")
 
     def intake(self) -> None:
         if self.shooter_component.is_loaded() is False:
             self.next_state("preparing_intake")
 
     def prefer_high(self) -> None:
-        return self.GoalHeight_Preference
+        self.goal_height_preference = GoalHeight.HIGH
 
     def prefer_mid(self) -> None:
-        if self.GoalHeight_Preference is not GoalHeight.MID:
-            self.GoalHeight_Preference = GoalHeight.MID
-            return
+        self.goal_height_preference = GoalHeight.MID
 
     def prefer_low(self) -> None:
-        if self.GoalHeight_Preference is not GoalHeight.LOW:
-            self.GoalHeight_Preference = GoalHeight.LOW
-            return
+        self.goal_height_preference = GoalHeight.LOW
