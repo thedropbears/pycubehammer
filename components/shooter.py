@@ -7,8 +7,6 @@ GEAR_RATIO: float  # whatever this is
 
 
 class Shooter:
-    # loaded_switch Digital I/O <- in my head this has something to confirm when the shooter is correctly loaded
-
     def __init__(self) -> None:
         # create instances of hardware handles
         self.top_flywheel = CANSparkMax(
