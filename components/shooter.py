@@ -1,4 +1,4 @@
-from math import tau
+from math import radians, tau
 
 from magicbot import tunable
 from rev import CANSparkMax
@@ -7,6 +7,7 @@ from wpilib import DigitalInput
 from ids import DioChannels, SparkMaxIds
 
 GEAR_RATIO: float = 1 / 1
+FLYWHEEL_SPEED_ERROR_TOLERANCE: float = radians(1)
 
 
 class Shooter:
@@ -51,6 +52,19 @@ class Shooter:
 
     def bottom_flywheel_error(self) -> float:
         return self.bottom_flywheel_speed - self.bottom_flywheel_encoder.getVelocity()
+
+    def top_flywheel_at_speed(self) -> bool:
+        return abs(self.top_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
+
+    def bottom_flywheel_at_speed(self) -> bool:
+        return abs(self.bottom_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
+
+    def is_ready(self) -> bool:
+        return (
+            self.top_flywheel_at_speed()
+            and self.bottom_flywheel_at_speed()
+            and self.is_loaded()
+        )
 
     def load(self) -> None:
         # set load variable
