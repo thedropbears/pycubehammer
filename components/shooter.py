@@ -45,7 +45,7 @@ class Shooter:
 
     def is_loaded(self) -> bool:
         # return state of loaded switch
-        return False
+        return not self.loaded_switch.get()
 
     def has_shot(self) -> bool:
         # true if shooting and change time greater than threshold
