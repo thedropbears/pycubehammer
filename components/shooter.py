@@ -38,9 +38,12 @@ class Shooter:
         # initialise last shooting
         # initialise loading
 
-    def set_flywheel_speed(self) -> None:
+    def set_flywheel_speed(
+        self, top_flywheel_speed: float, bottom_flywheel_speed: float
+    ) -> None:
         # update internal motor speed setpoint
-        pass
+        self.top_flywheel_speed = top_flywheel_speed
+        self.bottom_flywheel_speed = bottom_flywheel_speed
 
     def shoot(self) -> None:
         # rotate back motors so the cube is picked up by the flywheels
