@@ -26,7 +26,7 @@ class ShooterController(StateMachine):
     turret_component: Turret
 
     def __init__(self) -> None:
-        self.GoalHeight_Preference = GoalHeight.HIGH #default preference
+        self.goal_height_preference = GoalHeight.HIGH #default preference
 
     @state(first=True, must_finish=True)
     def preparing_intake(self) -> None:
