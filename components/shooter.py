@@ -1,9 +1,12 @@
+from math import tau
+
+from magicbot import tunable
 from rev import CANSparkMax
 from wpilib import DigitalInput
 
 from ids import DioChannels, SparkMaxIds
 
-GEAR_RATIO: float  # whatever this is
+GEAR_RATIO: float = 1 / 1
 
 
 class Shooter:
@@ -19,8 +22,17 @@ class Shooter:
             SparkMaxIds.back_motor, CANSparkMax.MotorType.kBrushless
         )
 
+        self.top_flywheel_encoder = self.top_flywheel.getEncoder()
+        self.bottom_flywheel_encoder = self.bottom_flywheel.getEncoder()
+        self.top_flywheel_encoder.setVelocityConversionFactor(GEAR_RATIO * tau / 60)
+        self.bottom_flywheel_encoder.setVelocityConversionFactor(GEAR_RATIO * tau / 60)
+
         self.loaded_switch = DigitalInput(DioChannels.loaded_shooter)
+
         # initialise motor speed
+        self.top_flywheel_speed = tunable(0.0)
+        self.bottom_flywheel_speed = tunable(0.0)
+
         # initialise shooting
         # initialise last shooting
         # initialise loading
@@ -34,9 +46,11 @@ class Shooter:
         # set loading variable
         pass
 
-    def flywheel_error(self) -> float:
-        # return actual velocity - reference velocity
-        return 0.0
+    def top_flywheel_error(self) -> float:
+        return self.top_flywheel_speed - self.top_flywheel_encoder.getVelocity()
+
+    def bottom_flywheel_error(self) -> float:
+        return self.bottom_flywheel_speed - self.bottom_flywheel_encoder.getVelocity()
 
     def load(self) -> None:
         # set load variable
