@@ -11,6 +11,7 @@ GEAR_RATIO: float = 1 / 1
 FLYWHEEL_SPEED_ERROR_TOLERANCE: float = radians(1)
 
 BACK_MOTOR_GEAR_RATIO: float = 1 / 1
+BACK_MOTOR_SHOOTING_SPEED: float = 12
 
 
 class Shooter:
@@ -59,8 +60,7 @@ class Shooter:
 
     def shoot(self) -> None:
         # rotate back motors so the cube is picked up by the flywheels
-        # set loading variable
-        pass
+        self.back_motor_speed = BACK_MOTOR_SHOOTING_SPEED
 
     def top_flywheel_error(self) -> float:
         return self.top_flywheel_speed - self.top_flywheel_encoder.getVelocity()
