@@ -87,6 +87,11 @@ class Shooter:
         # return state of loaded switch
         return not self.loaded_switch.get()
 
+    def stop(self) -> None:
+        self.top_flywheel_speed = 0.0
+        self.bottom_flywheel_speed = 0.0
+        self.back_motor_speed = 0.0
+
     def execute(self) -> None:
         top_voltage = self.top_flywheel_speed_controller.calculate(
             self.top_flywheel_encoder.getVelocity(), self.top_flywheel_speed
