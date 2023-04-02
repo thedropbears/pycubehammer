@@ -10,7 +10,7 @@ from ids import DioChannels, SparkMaxIds
 
 GEAR_RATIO: float = (10 / 1) * (4 / 1) * (140 / 18)
 ANGLE_ERROR_TOLERANCE: float = radians(1)
-MAX_ANGULAR_VELOCITY: float = 1.0
+MAX_ANGULAR_VELOCITY: float = 12.0
 MAX_ANGULAR_ACCELERATION: float = 0.5
 NEGATIVE_LIMIT_ANGLE: float = radians(-112)
 POSITIVE_LIMIT_ANGLE: float = radians(112)
@@ -34,13 +34,13 @@ class Turret:
             DioChannels.negative_turret_switch
         )  # These could also be attached directly to the motor controller breakout board for interrupts
         self.encoder = self.motor.getEncoder()
-        self.encoder.setPositionConversionFactor(tau/GEAR_RATIO)
-        self.encoder.setVelocityConversionFactor((tau / 60)/GEAR_RATIO)
+        self.encoder.setPositionConversionFactor(tau / GEAR_RATIO)
+        self.encoder.setVelocityConversionFactor((tau / 60) / GEAR_RATIO)
         rotation_contraints = TrapezoidProfileRadians.Constraints(
             maxVelocity=MAX_ANGULAR_VELOCITY, maxAcceleration=MAX_ANGULAR_ACCELERATION
         )
         self.rotation_controller = ProfiledPIDControllerRadians(
-            2, 0.0, 0.0, rotation_contraints
+            32.0, 0.0, 0.0, rotation_contraints
         )
         # set index found var to false
         self.index_found = False
@@ -75,22 +75,31 @@ class Turret:
         self.index_found = False
 
     def execute(self) -> None:
+        current_angle = self.get_angle()
         if self.at_negative_limit() and self.at_positive_limit():
             self.motor.setVoltage(0)
             return
 
         if self.at_negative_limit():
             self.encoder.setPosition(NEGATIVE_LIMIT_ANGLE)
+            current_angle = NEGATIVE_LIMIT_ANGLE
+            self.rotation_controller.reset(current_angle)
             self.index_found = True
+            self.motor.setVoltage(INDEX_SEARCH_VOLTAGE)
+            return
 
         if self.at_positive_limit():
             self.encoder.setPosition(POSITIVE_LIMIT_ANGLE)
+            current_angle = POSITIVE_LIMIT_ANGLE
+            self.rotation_controller.reset(current_angle)
             self.index_found = True
+            self.motor.setVoltage(-INDEX_SEARCH_VOLTAGE)
+            return
 
         if self.index_found:
             # calculate pid output based off angle delta
             pid_output = self.rotation_controller.calculate(
-                self.get_angle(), self.goal_angle
+                current_angle, self.goal_angle
             )
             # calcualte feed forward based off angle delta
             # clamp input
