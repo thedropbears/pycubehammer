@@ -26,7 +26,7 @@ class Turret:
         # Create the hardware object handles
         self.motor = CANSparkMax(
             SparkMaxIds.turret_motor, CANSparkMax.MotorType.kBrushless
-        )  # This will need to change to the proper motor controller type
+        )
         self.motor.setIdleMode(CANSparkMax.IdleMode.kBrake)
         self.motor.setInverted(False)
         self.positive_limit_switch = DigitalInput(DioChannels.positive_turret_switch)
