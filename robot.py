@@ -84,8 +84,9 @@ class Robot(magicbot.MagicRobot):
             if self.gamepad.getLeftBumperPressed():
                 self.shooter_controller.intake()
 
-        self.turret_component.execute()
         self.shooter_controller.execute()
+        self.intake_component.execute()
+        self.turret_component.execute()
         self.shooter_controller.try_shoot = False
 
 
