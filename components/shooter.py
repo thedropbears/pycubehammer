@@ -12,6 +12,7 @@ FLYWHEEL_SPEED_ERROR_TOLERANCE: float = radians(1)
 
 BACK_MOTOR_GEAR_RATIO: float = 1 / 1
 BACK_MOTOR_SHOOTING_SPEED: float = 12
+INTAKE_SPEED: float = 12
 
 
 class Shooter:
@@ -82,9 +83,9 @@ class Shooter:
         )
 
     def load(self) -> None:
-        # set load variable
-        # set shooting variable
-        pass
+        self.top_flywheel_speed = INTAKE_SPEED
+        self.bottom_flywheel_speed = INTAKE_SPEED
+        self.back_motor_speed = INTAKE_SPEED
 
     def is_loaded(self) -> bool:
         # return state of loaded switch
