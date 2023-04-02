@@ -3,17 +3,21 @@ from math import radians, tau
 from magicbot import tunable
 from rev import CANSparkMax
 from wpilib import DigitalInput
+from wpimath.controller import PIDController
 
 from ids import DioChannels, SparkMaxIds
 
 GEAR_RATIO: float = 1 / 1
 FLYWHEEL_SPEED_ERROR_TOLERANCE: float = radians(1)
 
+BACK_MOTOR_GEAR_RATIO: float = 1 / 1
+
 
 class Shooter:
     # initialise motor speed
     top_flywheel_speed = tunable(0.0)
     bottom_flywheel_speed = tunable(0.0)
+    back_motor_speed = tunable(0.0)
 
     def __init__(self) -> None:
         # create instances of hardware handles
@@ -29,8 +33,16 @@ class Shooter:
 
         self.top_flywheel_encoder = self.top_flywheel.getEncoder()
         self.bottom_flywheel_encoder = self.bottom_flywheel.getEncoder()
+        self.back_motor_encoder = self.back_motor.getEncoder()
         self.top_flywheel_encoder.setVelocityConversionFactor(GEAR_RATIO * tau / 60)
         self.bottom_flywheel_encoder.setVelocityConversionFactor(GEAR_RATIO * tau / 60)
+        self.back_motor_encoder.setVelocityConversionFactor(
+            BACK_MOTOR_GEAR_RATIO * tau / 60
+        )
+
+        self.top_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
+        self.bottom_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
+        self.back_motor_speed_controller = PIDController(1.0, 0.0, 0.0)
 
         self.loaded_switch = DigitalInput(DioChannels.loaded_shooter)
 
@@ -83,17 +95,16 @@ class Shooter:
         return False
 
     def execute(self) -> None:
-        # if loading
-        # update has shootd to false
-        # set reverse speed to suck up
-        # return
+        top_voltage = self.top_flywheel_speed_controller.calculate(
+            self.top_flywheel_encoder.getVelocity(), self.top_flywheel_speed
+        )
+        bottom_voltage = self.bottom_flywheel_speed_controller.calculate(
+            self.bottom_flywheel_encoder.getVelocity(), self.bottom_flywheel_speed
+        )
+        back_voltage = self.back_motor_speed_controller.calculate(
+            self.back_motor_encoder.getVelocity(), self.back_motor_speed
+        )
 
-        # if shooting and shooting != last shooting
-        # update change time
-
-        # if shooting
-        # set forward speed on neck motor
-
-        # update flywheels to setpoint
-
-        pass
+        self.top_flywheel.setVoltage(top_voltage)
+        self.bottom_flywheel.setVoltage(bottom_voltage)
+        self.back_motor.setVoltage(back_voltage)
