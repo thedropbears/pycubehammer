@@ -52,7 +52,7 @@ class ShooterController(StateMachine):
 
         if (
             self.try_shoot
-            and self.shooter_component.is_loaded()
+            # and self.shooter_component.is_loaded()
             and self.turret_component.at_angle()
             and self.tilt_component.at_angle()
         ):  # and self.shooter_component.at_speed()
