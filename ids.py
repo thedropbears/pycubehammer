@@ -26,12 +26,15 @@ class CancoderIds(enum.IntEnum):
 
 @enum.unique
 class SparkMaxIds(enum.IntEnum):
+    intake_front = 3
+
     turret_motor = 1
 
 
 @enum.unique
 class PhChannels(enum.IntEnum):
-    pass
+    intake_piston_forward = 4
+    intake_piston_reverse = 5
 
 
 @enum.unique

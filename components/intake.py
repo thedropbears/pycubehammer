@@ -1,29 +1,38 @@
-class Intake:
-    # front_motor: whatever motor type it is
-    # tunnel_motor: whatever motor type this is # this also assumes that the two stages are not slaved together
-    # deployment_piston: solenoid
+from magicbot import tunable
+from rev import CANSparkMax
+from wpilib import DoubleSolenoid, PneumaticsModuleType
 
-    # deployed
+import ids
+
+
+class Intake:
+    front_speed = tunable(0.8)
+    deployed = tunable(False)
 
     def __init__(self) -> None:
-        # create hardware handles here
-
-        # initialise deployed var
-
-        pass
+        self.front_motor = CANSparkMax(
+            ids.SparkMaxIds.intake_front, CANSparkMax.MotorType.kBrushless
+        )
+        self.front_motor.restoreFactoryDefaults()
+        self.front_motor.setSmartCurrentLimit(30)
+        self.front_motor.setInverted(True)
+        # TODO: tunnel_motor
+        self.piston = DoubleSolenoid(
+            PneumaticsModuleType.REVPH,
+            ids.PhChannels.intake_piston_forward,
+            ids.PhChannels.intake_piston_reverse,
+        )
 
     def deploy(self) -> None:
-        # set deployed var
-
-        pass
+        self.deployed = True
 
     def retract(self) -> None:
-        # set deployed var
-        pass
+        self.deployed = False
 
     def execute(self) -> None:
-        # If deployed var
-        # actuate piston and spin up motors
-        # else:
-        # actuate piston and stop motors
-        pass
+        if self.deployed:
+            self.piston.set(DoubleSolenoid.Value.kForward)
+            self.front_motor.set(self.front_speed)
+        else:
+            self.piston.set(DoubleSolenoid.Value.kReverse)
+            self.front_motor.stopMotor()
