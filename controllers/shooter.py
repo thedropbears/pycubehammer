@@ -1,6 +1,6 @@
 from enum import Enum
 
-from magicbot import StateMachine, default_state, state
+from magicbot import StateMachine, default_state, state, will_reset_to
 
 from components.intake import Intake
 from components.shooter import Shooter
@@ -27,6 +27,7 @@ class ShooterController(StateMachine):
 
     def __init__(self) -> None:
         self.goal_height_preference = GoalHeight.HIGH  # default preference
+        self.try_shoot = will_reset_to(False)
 
     @state(first=True, must_finish=True)
     def preparing_intake(self) -> None:
@@ -45,8 +46,8 @@ class ShooterController(StateMachine):
 
     @default_state
     def tracking(self) -> None:
-        if self.turret_component.find_index():  ###
-            return
+        if self.try_shoot:
+            self.next_state("shooting")
         self.shooter_component.set_flywheel_speed(1.0)
         self.turret_component.set_angle(0.0)
         self.tilt_component.set_angle(0.0)
@@ -62,10 +63,11 @@ class ShooterController(StateMachine):
         ):  # and self.shooter_component.at_flywheel_speed():
             self.shooter_component.shoot()
             self.next_state("preparing_intake")
+        else:
+            self.next_state("tracking")
 
     def shoot(self) -> None:
-        if self.tracking():
-            self.next_state("shooting")
+        self.try_shoot = True
 
     def intake(self) -> None:
         if self.shooter_component.is_loaded() is False:
