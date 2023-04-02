@@ -31,7 +31,7 @@ class Tilt:
     def at_angle(self) -> bool:
         # return abs(current angle - reference) < Tolerance
         # This could also be done inside the motor controller depending on how it works
-        return False
+        return True
 
     def execute(self) -> None:
         # add logic for engaging and disengaging brake if it exists
