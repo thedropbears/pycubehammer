@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from math import radians
+
 import magicbot
 import wpilib
 
@@ -64,7 +66,17 @@ class Robot(magicbot.MagicRobot):
         pass
 
     def testPeriodic(self) -> None:
-        pass
+        # Turret
+        if self.gamepad.getYButton():
+            dpad_angle = self.gamepad.getPOV()
+
+            if dpad_angle != -1:
+                turret_angle = -dpad_angle
+                if turret_angle < -180:
+                    turret_angle = turret_angle + 360
+                self.turret_component.set_angle(radians(turret_angle))
+
+        self.turret_component.execute()
 
 
 if __name__ == "__main__":
