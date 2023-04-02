@@ -8,7 +8,7 @@ from wpimath.trajectory import TrapezoidProfileRadians
 
 from ids import DioChannels, SparkMaxIds
 
-GEAR_RATIO: float = (7 / 1) * (4 / 1) * (18 / 140)
+GEAR_RATIO: float = (10 / 1) * (4 / 1) * (140 / 18)
 ANGLE_ERROR_TOLERANCE: float = radians(1)
 MAX_ANGULAR_VELOCITY: float = 1.0
 MAX_ANGULAR_ACCELERATION: float = 0.5
@@ -34,8 +34,8 @@ class Turret:
             DioChannels.negative_turret_switch
         )  # These could also be attached directly to the motor controller breakout board for interrupts
         self.encoder = self.motor.getEncoder()
-        self.encoder.setPositionConversionFactor(GEAR_RATIO * tau)
-        self.encoder.setVelocityConversionFactor(GEAR_RATIO * tau / 60)
+        self.encoder.setPositionConversionFactor(tau/GEAR_RATIO)
+        self.encoder.setVelocityConversionFactor((tau / 60)/GEAR_RATIO)
         rotation_contraints = TrapezoidProfileRadians.Constraints(
             maxVelocity=MAX_ANGULAR_VELOCITY, maxAcceleration=MAX_ANGULAR_ACCELERATION
         )
