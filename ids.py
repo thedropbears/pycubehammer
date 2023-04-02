@@ -31,6 +31,7 @@ class SparkMaxIds(enum.IntEnum):
     intake_front = 3
 
     turret_motor = 1
+    tilt_motor = 2
     top_flywheel = 10
     bottom_flywheel = 11
 
