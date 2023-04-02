@@ -11,6 +11,10 @@ FLYWHEEL_SPEED_ERROR_TOLERANCE: float = radians(1)
 
 
 class Shooter:
+    # initialise motor speed
+    top_flywheel_speed = tunable(0.0)
+    bottom_flywheel_speed = tunable(0.0)
+
     def __init__(self) -> None:
         # create instances of hardware handles
         self.top_flywheel = CANSparkMax(
@@ -29,10 +33,6 @@ class Shooter:
         self.bottom_flywheel_encoder.setVelocityConversionFactor(GEAR_RATIO * tau / 60)
 
         self.loaded_switch = DigitalInput(DioChannels.loaded_shooter)
-
-        # initialise motor speed
-        self.top_flywheel_speed = tunable(0.0)
-        self.bottom_flywheel_speed = tunable(0.0)
 
         # initialise shooting
         # initialise last shooting
