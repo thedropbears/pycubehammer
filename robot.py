@@ -15,15 +15,15 @@ from utilities.scalers import rescale_js
 
 
 class Robot(magicbot.MagicRobot):
+    # Controllers
+    shooter_controller: ShooterController
+
     # Components
     chassis_component: Chassis
     intake_component: Intake
     shooter_component: Shooter
     tilt_component: Tilt
     turret_component: Turret
-
-    # Controllers
-    shooter_controller: ShooterController
 
     SPIN_RATE = 4
     MAX_SPEED = magicbot.tunable(Chassis.max_wheel_speed * 0.95)
