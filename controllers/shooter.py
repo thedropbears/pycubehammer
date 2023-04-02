@@ -43,16 +43,11 @@ class ShooterController(StateMachine):
 
     @default_state
     def tracking(self) -> None:
-        bs = calculate_ballistics(
-            self.chassis_component.get_pose(), Pose2d(), self.goal_height_preference
-        )
-        self.shooter_component.set_flywheel_speed()  # bs.top_flywheel_speed, bs.bottom_flywheel_speed
-        self.turret_component.set_angle(bs.turret_angle)
-        self.tilt_component.set_angle(bs.tilt_angle)
+        self.update_component_setpoints()
 
         if (
             self.try_shoot
-            # and self.shooter_component.is_loaded()
+            and self.shooter_component.is_loaded()
             and self.turret_component.at_angle()
             and self.tilt_component.at_angle()
         ):  # and self.shooter_component.at_speed()
@@ -60,13 +55,18 @@ class ShooterController(StateMachine):
 
     @timed_state(must_finish=True, duration=1.0, next_state="tracking")
     def shooting(self) -> None:
+        self.update_component_setpoints()
+        self.shooter_component.shoot()
+
+    def update_component_setpoints(self) -> None:
         bs = calculate_ballistics(
             self.chassis_component.get_pose(), Pose2d(), self.goal_height_preference
         )
-        self.shooter_component.set_flywheel_speed()  # bs.top_flywheel_speed, bs.bottom_flywheel_speed
+        self.shooter_component.set_flywheel_speed(
+            bs.top_flywheel_speed, bs.bottom_flywheel_speed
+        )
         self.turret_component.set_angle(bs.turret_angle)
         self.tilt_component.set_angle(bs.tilt_angle)
-        self.shooter_component.shoot()
 
     def shoot(self) -> None:
         self.try_shoot = True
