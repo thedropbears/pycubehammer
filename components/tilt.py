@@ -1,5 +1,8 @@
+import math
+
 GEAR_RATIO: float
 ANGLE_ERROR_TOLERANCE: float
+INTAKING_ANGLE: float = math.radians(90)
 
 
 class Tilt:
@@ -21,6 +24,9 @@ class Tilt:
         # You will need to check the documentation if this can be on the output shaft
         # or if you need to convert the angle back to a motor angle with the gear ratio
         pass
+
+    def goto_intaking(self) -> None:
+        self.set_angle(INTAKING_ANGLE)
 
     def at_angle(self) -> bool:
         # return abs(current angle - reference) < Tolerance
