@@ -1,5 +1,9 @@
 import math
 
+from rev import CANSparkMax
+
+from ids import SparkMaxIds
+
 GEAR_RATIO: float
 ANGLE_ERROR_TOLERANCE: float
 INTAKING_ANGLE: float = math.radians(90)
@@ -14,15 +18,18 @@ class Tilt:
     # goal_angle = 0.0
 
     def __init__(self) -> None:
-        # Create the hardware object handles
-
-        pass
+        self.motor = CANSparkMax(
+            SparkMaxIds.tilt_motor, CANSparkMax.MotorType.kBrushless
+        )
+        self.encoder = self.motor.getEncoder()
 
     def set_angle(self, angle: float) -> None:
         # set the desired angle for the turret
+        math.radians(0)
 
         # You will need to check the documentation if this can be on the output shaft
         # or if you need to convert the angle back to a motor angle with the gear ratio
+
         pass
 
     def goto_intaking(self) -> None:
