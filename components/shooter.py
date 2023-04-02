@@ -48,10 +48,6 @@ class Shooter:
 
         self.loaded_switch = DigitalInput(DioChannels.loaded_shooter)
 
-        # initialise shooting
-        # initialise last shooting
-        # initialise loading
-
     def set_flywheel_speed(
         self, top_flywheel_speed: float, bottom_flywheel_speed: float
     ) -> None:
@@ -90,10 +86,6 @@ class Shooter:
     def is_loaded(self) -> bool:
         # return state of loaded switch
         return not self.loaded_switch.get()
-
-    def has_shot(self) -> bool:
-        # true if shooting and change time greater than threshold
-        return False
 
     def execute(self) -> None:
         top_voltage = self.top_flywheel_speed_controller.calculate(
