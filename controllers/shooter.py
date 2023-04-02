@@ -22,7 +22,8 @@ class ShooterController(StateMachine):
 
     def __init__(self) -> None:
         self.goal_height_preference = GoalHeight.HIGH  # default preference
-        self.try_shoot = will_reset_to(False)
+
+    try_shoot = will_reset_to(False)
 
     @state(first=True, must_finish=True)
     def preparing_intake(self) -> None:
