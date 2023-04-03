@@ -73,7 +73,7 @@ class ShooterController(StateMachine):
 
     def intake(self) -> None:
         if not self.shooter_component.is_loaded():
-            self.next_state("preparing_intake")
+            self.engage()
 
     def prefer_high(self) -> None:
         self.goal_height_preference = GoalHeight.HIGH
