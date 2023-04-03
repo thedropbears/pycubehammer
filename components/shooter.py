@@ -1,6 +1,6 @@
 from math import radians, tau
 
-from magicbot import tunable
+from magicbot import feedback, tunable
 from rev import CANSparkMax
 from wpilib import DigitalInput
 from wpimath.controller import PIDController
@@ -59,9 +59,11 @@ class Shooter:
         # rotate back motors so the cube is picked up by the flywheels
         self.back_motor_speed = BACK_MOTOR_SHOOTING_SPEED
 
+    @feedback
     def top_flywheel_error(self) -> float:
         return self.top_flywheel_speed - self.top_flywheel_encoder.getVelocity()
 
+    @feedback
     def bottom_flywheel_error(self) -> float:
         return self.bottom_flywheel_speed - self.bottom_flywheel_encoder.getVelocity()
 
