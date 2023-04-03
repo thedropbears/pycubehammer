@@ -2,7 +2,7 @@ from math import radians, tau
 
 from magicbot import feedback, tunable
 from rev import CANSparkMax
-from wpilib import DigitalInput
+from wpilib import DigitalInput, SmartDashboard
 from wpimath.controller import PIDController
 
 from ids import DioChannels, SparkMaxIds
@@ -45,6 +45,11 @@ class Shooter:
         self.top_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
         self.bottom_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
         self.back_motor_speed_controller = PIDController(1.0, 0.0, 0.0)
+
+        SmartDashboard.putData("flywheel_top_pid", self.top_flywheel_speed_controller)
+        SmartDashboard.putData(
+            "flywheel_bottom_pid", self.bottom_flywheel_speed_controller
+        )
 
         self.loaded_switch = DigitalInput(DioChannels.loaded_shooter)
 
