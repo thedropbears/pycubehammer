@@ -20,10 +20,10 @@ class ShooterController(StateMachine):
     tilt_component: Tilt
     turret_component: Turret
 
+    try_shoot = will_reset_to(False)
+
     def __init__(self) -> None:
         self.goal_height_preference = GoalHeight.HIGH  # default preference
-
-    try_shoot = will_reset_to(False)
 
     @state(first=True, must_finish=True)
     def preparing_intake(self) -> None:
