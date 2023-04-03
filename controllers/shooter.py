@@ -36,6 +36,7 @@ class ShooterController(StateMachine):
     @state(must_finish=True)
     def intaking(self) -> None:
         self.intake_component.deploy()
+        self.shooter_component.load()
 
         if self.shooter_component.is_loaded():
             self.intake_component.retract()
