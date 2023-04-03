@@ -63,11 +63,16 @@ class ShooterController(StateMachine):
         bs = calculate_ballistics(
             self.chassis_component.get_pose(), Pose2d(), self.goal_height_preference
         )
-        self.shooter_component.set_flywheel_speed(
-            bs.top_flywheel_speed, bs.bottom_flywheel_speed
-        )
         self.turret_component.set_angle(bs.turret_angle)
         self.tilt_component.set_angle(bs.tilt_angle)
+        # We can be tracking the targets even if we don't have a cube
+        # No need to run the flywheels if we can't shoot
+        if self.shooter_component.is_loaded():
+            self.shooter_component.set_flywheel_speed(
+                bs.top_flywheel_speed, bs.bottom_flywheel_speed
+            )
+        else:
+            self.shooter_component.stop()
 
     def shoot(self) -> None:
         self.try_shoot = True
