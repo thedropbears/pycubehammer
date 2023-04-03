@@ -51,7 +51,7 @@ class ShooterController(StateMachine):
             and self.shooter_component.is_ready()
             and self.turret_component.at_angle()
             and self.tilt_component.at_angle()
-        ):  # and self.shooter_component.at_speed()
+        ):
             self.next_state("shooting")
 
     @timed_state(must_finish=True, duration=1.0)
