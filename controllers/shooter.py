@@ -53,7 +53,7 @@ class ShooterController(StateMachine):
         ):  # and self.shooter_component.at_speed()
             self.next_state("shooting")
 
-    @timed_state(must_finish=True, duration=1.0, next_state="tracking")
+    @timed_state(must_finish=True, duration=1.0)
     def shooting(self) -> None:
         self.update_component_setpoints()
         self.shooter_component.shoot()
