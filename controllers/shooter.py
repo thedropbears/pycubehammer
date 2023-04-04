@@ -1,18 +1,12 @@
-from enum import Enum
+from magicbot import StateMachine, default_state, state, timed_state, will_reset_to
+from wpimath.geometry import Pose2d
 
-from magicbot import StateMachine, default_state, state
-
+from components.chassis import Chassis
 from components.intake import Intake
 from components.shooter import Shooter
 from components.tilt import Tilt
 from components.turret import Turret
-
-
-class GoalHeight(Enum):
-    HIGH = 2
-    MID = 1
-    LOW = 0
-
+from utilities.ballistics import GoalHeight, calculate_ballistics
 
 # Setpoints for intaking state
 INTAKE_AZIMUTH: float
@@ -20,72 +14,78 @@ INTAKE_TILT: float
 
 
 class ShooterController(StateMachine):
+    chassis_component: Chassis
     intake_component: Intake
     shooter_component: Shooter
     tilt_component: Tilt
     turret_component: Turret
 
+    try_shoot = will_reset_to(False)
+
     def __init__(self) -> None:
-        # set default preference for goal height
-        pass
+        self.goal_height_preference = GoalHeight.HIGH  # default preference
 
     @state(first=True, must_finish=True)
     def preparing_intake(self) -> None:
-        # send pitch and turret to angle
+        self.turret_component.set_angle(0.0)
+        self.tilt_component.goto_intaking()
 
-        # if at pitch and turret angle
-        # next state intaking
-        pass
+        if self.turret_component.at_angle() and self.tilt_component.at_angle():
+            self.next_state("intaking")
 
     @state(must_finish=True)
     def intaking(self) -> None:
-        # shooter intake
-        # intake deploy
+        self.intake_component.deploy()
+        self.shooter_component.load()
 
-        # if shooter is loaded
-        # retract intake
-        # next state tracking
-        pass
+        if self.shooter_component.is_loaded():
+            self.intake_component.retract()
+            self.next_state("tracking")
 
     @default_state
     def tracking(self) -> None:
-        # if turret not indexed
-        # return
+        self.update_component_setpoints()
 
-        # update flywheel speed
-        # update turret angle
-        # update tilt angle
+        if (
+            self.try_shoot
+            and self.shooter_component.is_ready()
+            and self.turret_component.at_angle()
+            and self.tilt_component.at_angle()
+        ):
+            self.next_state("shooting")
 
-        pass
-
-    @state(must_finish=True)
+    @timed_state(must_finish=True, duration=1.0)
     def shooting(self) -> None:
-        # update flywheel speed
-        # update turret angle
-        # update tilt angle
+        self.update_component_setpoints()
+        self.shooter_component.shoot()
 
-        # if tilt ready and turret ready and flywheels at speed
-        # shoot
-        # next state tracking
-        pass
+    def update_component_setpoints(self) -> None:
+        bs = calculate_ballistics(
+            self.chassis_component.get_pose(), Pose2d(), self.goal_height_preference
+        )
+        self.turret_component.set_angle(bs.turret_angle)
+        self.tilt_component.set_angle(bs.tilt_angle)
+        # We can be tracking the targets even if we don't have a cube
+        # No need to run the flywheels if we can't shoot
+        if self.shooter_component.is_loaded():
+            self.shooter_component.set_flywheel_speed(
+                bs.top_flywheel_speed, bs.bottom_flywheel_speed
+            )
+        else:
+            self.shooter_component.stop()
 
     def shoot(self) -> None:
-        # set next state to shooting
-        pass
+        self.try_shoot = True
 
     def intake(self) -> None:
-        # if shooter doesn't have a cube
-        # set next state to preparing intake
-        pass
+        if not self.shooter_component.is_loaded():
+            self.engage()
 
     def prefer_high(self) -> None:
-        # set preference
-        pass
+        self.goal_height_preference = GoalHeight.HIGH
 
     def prefer_mid(self) -> None:
-        # set preference
-        pass
+        self.goal_height_preference = GoalHeight.MID
 
     def prefer_low(self) -> None:
-        # set preference
-        pass
+        self.goal_height_preference = GoalHeight.LOW

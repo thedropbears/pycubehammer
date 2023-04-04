@@ -1,5 +1,8 @@
+import math
+
 GEAR_RATIO: float
 ANGLE_ERROR_TOLERANCE: float
+INTAKING_ANGLE: float = math.radians(90)
 
 
 class Tilt:
@@ -22,10 +25,13 @@ class Tilt:
         # or if you need to convert the angle back to a motor angle with the gear ratio
         pass
 
+    def goto_intaking(self) -> None:
+        self.set_angle(INTAKING_ANGLE)
+
     def at_angle(self) -> bool:
         # return abs(current angle - reference) < Tolerance
         # This could also be done inside the motor controller depending on how it works
-        return False
+        return True
 
     def execute(self) -> None:
         # add logic for engaging and disengaging brake if it exists

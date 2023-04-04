@@ -76,7 +76,18 @@ class Robot(magicbot.MagicRobot):
                     turret_angle = turret_angle + 360
                 self.turret_component.set_angle(radians(turret_angle))
 
+        # shooter controller
+        if self.gamepad.getXButton():
+            if self.gamepad.getRightBumper():
+                self.shooter_controller.shoot()
+
+            if self.gamepad.getLeftBumperPressed():
+                self.shooter_controller.intake()
+
+        self.shooter_controller.execute()
+        self.intake_component.execute()
         self.turret_component.execute()
+        self.shooter_controller.try_shoot = False
 
 
 if __name__ == "__main__":
