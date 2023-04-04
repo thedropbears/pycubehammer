@@ -99,13 +99,19 @@ class Turret:
             else:
                 self.motor.setVoltage(-INDEX_SEARCH_VOLTAGE)
 
+    def on_enable(self) -> None:
+        self.motor.setIdleMode(CANSparkMax.IdleMode.kBrake)
+
+    def on_disable(self) -> None:
+        self.motor.setIdleMode(CANSparkMax.IdleMode.kCoast)
+
     def maybe_rezero_off_limits_switches(self) -> None:
         if self.at_negative_limit():
             self.set_to_angle(NEGATIVE_LIMIT_ANGLE)
         if self.at_positive_limit():
             self.set_to_angle(POSITIVE_LIMIT_ANGLE)
-    
-    # override the current position to be angle
+
+    # override the current angle to be angle
     def set_to_angle(self, angle):
         self.encoder.setPosition(angle)
         self.rotation_controller.reset(angle)
