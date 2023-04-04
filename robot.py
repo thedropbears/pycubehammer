@@ -43,9 +43,6 @@ class Robot(magicbot.MagicRobot):
     def autonomousInit(self) -> None:
         pass
 
-    def autonomousPeriodic(self) -> None:
-        pass
-
     def teleopInit(self) -> None:
         pass
 
