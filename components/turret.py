@@ -80,11 +80,18 @@ class Turret:
         self.index_found = False
 
     def execute(self) -> None:
-        if self.at_negative_limit() and self.at_positive_limit():
+        self.maybe_rezero_off_limits_switches()
+
+        if self.at_positive_limit() and self.at_negative_limit():
             self.motor.setVoltage(0)
             return
+        if self.at_positive_limit():
+            self.motor.setVoltage(-INDEX_SEARCH_VOLTAGE)
+            return
+        if self.at_negative_limit():
+            self.motor.setVoltage(INDEX_SEARCH_VOLTAGE)
+            return
 
-        self.maybe_rezero_off_limits_switches()
 
         if self.index_found:
             # calculate pid output based off angle delta
