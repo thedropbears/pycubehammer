@@ -72,7 +72,7 @@ class ShooterController(StateMachine):
 
     def get_target_pose(self) -> Pose2d:
         return Pose2d()
-    
+
     def shoot(self) -> None:
         self.try_shoot = True
 
