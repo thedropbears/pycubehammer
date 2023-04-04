@@ -21,6 +21,7 @@ NEGATIVE_SOFT_LIMIT_ANGLE: float = NEGATIVE_LIMIT_ANGLE + radians(5)
 
 class Turret:
     goal_angle = tunable(0.0)
+    index_search_positive = tunable(True)
 
     def __init__(self) -> None:
         # Create the hardware object handles
@@ -106,5 +107,7 @@ class Turret:
 
             self.motor.setVoltage(pid_output)
         else:
-            # set desired output voltage or speed to find index
-            self.motor.setVoltage(INDEX_SEARCH_VOLTAGE)
+            if self.index_search_positive:
+                self.motor.setVoltage(INDEX_SEARCH_VOLTAGE)
+            else:
+                self.motor.setVoltage(-INDEX_SEARCH_VOLTAGE)
