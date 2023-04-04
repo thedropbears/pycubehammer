@@ -41,7 +41,7 @@ class Turret:
             maxVelocity=MAX_ANGULAR_VELOCITY, maxAcceleration=MAX_ANGULAR_ACCELERATION
         )
         self.rotation_controller = ProfiledPIDControllerRadians(
-            32.0, 0.0, 0.0, rotation_contraints
+            8.0, 0.0, 0.0, rotation_contraints
         )
         # set index found var to false
         self.index_found = False
