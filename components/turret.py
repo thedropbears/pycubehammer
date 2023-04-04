@@ -11,7 +11,7 @@ from ids import DioChannels, SparkMaxIds
 GEAR_RATIO: float = (10 / 1) * (4 / 1) * (140 / 18)
 ANGLE_ERROR_TOLERANCE: float = radians(1)
 MAX_ANGULAR_VELOCITY: float = 12.0
-MAX_ANGULAR_ACCELERATION: float = 0.5
+MAX_ANGULAR_ACCELERATION: float = 2.0
 NEGATIVE_LIMIT_ANGLE: float = radians(-112)
 POSITIVE_LIMIT_ANGLE: float = radians(112)
 INDEX_SEARCH_VOLTAGE: float = 2.0
