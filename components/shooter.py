@@ -1,4 +1,4 @@
-from math import radians, tau
+from math import radians
 
 from magicbot import tunable
 from rev import CANSparkMax
@@ -7,10 +7,9 @@ from wpimath.controller import PIDController
 
 from ids import DioChannels, SparkMaxIds
 
-GEAR_RATIO: float = 1 / 1
 FLYWHEEL_SPEED_ERROR_TOLERANCE: float = radians(1)
 
-BACK_MOTOR_GEAR_RATIO: float = 1 / 1
+
 BACK_MOTOR_SHOOTING_SPEED: float = 12
 INTAKE_SPEED: float = 12
 
@@ -36,11 +35,6 @@ class Shooter:
         self.top_flywheel_encoder = self.top_flywheel.getEncoder()
         self.bottom_flywheel_encoder = self.bottom_flywheel.getEncoder()
         self.back_motor_encoder = self.back_motor.getEncoder()
-        self.top_flywheel_encoder.setVelocityConversionFactor(GEAR_RATIO * tau / 60)
-        self.bottom_flywheel_encoder.setVelocityConversionFactor(GEAR_RATIO * tau / 60)
-        self.back_motor_encoder.setVelocityConversionFactor(
-            BACK_MOTOR_GEAR_RATIO * tau / 60
-        )
 
         self.top_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
         self.bottom_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
