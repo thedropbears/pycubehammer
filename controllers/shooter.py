@@ -57,7 +57,9 @@ class ShooterController(StateMachine):
 
     def update_component_setpoints(self) -> None:
         bs = calculate_ballistics(
-            self.chassis_component.get_pose(), self.get_target_pose(), self.goal_height_preference
+            self.chassis_component.get_pose(),
+            self.get_target_pose(),
+            self.goal_height_preference
         )
         self.turret_component.set_angle(bs.turret_angle)
         self.tilt_component.set_angle(bs.tilt_angle)
