@@ -60,10 +60,12 @@ class Shooter:
         return self.bottom_flywheel_speed - self.bottom_flywheel_encoder.getVelocity()
 
     def top_flywheel_at_speed(self) -> bool:
-        return abs(self.top_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
+        # return abs(self.top_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
+        return True
 
     def bottom_flywheel_at_speed(self) -> bool:
-        return abs(self.bottom_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
+        # return abs(self.bottom_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
+        return True
 
     def is_ready(self) -> bool:
         return (
@@ -87,15 +89,20 @@ class Shooter:
         self.back_motor_speed = 0.0
 
     def execute(self) -> None:
-        top_voltage = self.top_flywheel_speed_controller.calculate(
-            self.top_flywheel_encoder.getVelocity(), self.top_flywheel_speed
-        )
-        bottom_voltage = self.bottom_flywheel_speed_controller.calculate(
-            self.bottom_flywheel_encoder.getVelocity(), self.bottom_flywheel_speed
-        )
-        back_voltage = self.back_motor_speed_controller.calculate(
-            self.back_motor_encoder.getVelocity(), self.back_motor_speed
-        )
+        # top_voltage = self.top_flywheel_speed_controller.calculate(
+        #     self.top_flywheel_encoder.getVelocity(), self.top_flywheel_speed
+        # )
+        # bottom_voltage = self.bottom_flywheel_speed_controller.calculate(
+        #     self.bottom_flywheel_encoder.getVelocity(), self.bottom_flywheel_speed
+        # )
+        # back_voltage = self.back_motor_speed_controller.calculate(
+        #     self.back_motor_encoder.getVelocity(), self.back_motor_speed
+        # )
+        top_voltage = self.top_flywheel_speed / 600 * 12
+
+        bottom_voltage = self.bottom_flywheel_speed / 600 * 12
+
+        back_voltage = self.back_motor_speed / 600 * 12
 
         self.top_flywheel.setVoltage(top_voltage)
         self.bottom_flywheel.setVoltage(bottom_voltage)
