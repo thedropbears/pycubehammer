@@ -10,8 +10,8 @@ from ids import DioChannels, SparkMaxIds
 FLYWHEEL_SPEED_ERROR_TOLERANCE: float = radians(1)
 
 
-BACK_MOTOR_SHOOTING_SPEED: float = 12
-INTAKE_SPEED: float = 12
+BACK_MOTOR_SHOOTING_SPEED: float = 600
+INTAKE_SPEED: float = -80
 
 
 class Shooter:
@@ -88,7 +88,13 @@ class Shooter:
         self.bottom_flywheel_speed = 0.0
         self.back_motor_speed = 0.0
 
+    def is_loading(self) -> bool:
+        return self.top_flywheel_speed < 0 and self.bottom_flywheel_speed < 0
+
     def execute(self) -> None:
+        if self.is_loaded() and self.is_loading():
+            self.stop()
+
         # top_voltage = self.top_flywheel_speed_controller.calculate(
         #     self.top_flywheel_encoder.getVelocity(), self.top_flywheel_speed
         # )

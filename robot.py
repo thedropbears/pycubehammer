@@ -85,10 +85,10 @@ class Robot(magicbot.MagicRobot):
                 self.shooter_controller.intake()
 
         # shooter component
-        if self.gamepad.getAButtonPressed():
+        if self.gamepad.getAButton():
             dpad_angle = self.gamepad.getPOV()
 
-            if dpad_angle == 90:
+            if self.gamepad.getRightBumperPressed():
                 top_flywheel_speed = self.shooter_component.top_flywheel_speed + 100
                 bottom_flywheel_speed = (
                     self.shooter_component.bottom_flywheel_speed + 100
@@ -101,7 +101,7 @@ class Robot(magicbot.MagicRobot):
                     top_flywheel_speed, bottom_flywheel_speed
                 )
 
-            if dpad_angle == 270:
+            if self.gamepad.getLeftBumperPressed():
                 top_flywheel_speed = self.shooter_component.top_flywheel_speed - 100
                 bottom_flywheel_speed = (
                     self.shooter_component.bottom_flywheel_speed - 100
@@ -113,6 +113,15 @@ class Robot(magicbot.MagicRobot):
                 self.shooter_component.set_flywheel_speed(
                     top_flywheel_speed, bottom_flywheel_speed
                 )
+
+            if dpad_angle == 0:
+                self.shooter_component.shoot()
+
+            if dpad_angle == 180:
+                self.shooter_component.load()
+
+            if dpad_angle == 270:
+                self.shooter_component.stop()
 
         # self.shooter_controller.execute()
         self.intake_component.execute()
