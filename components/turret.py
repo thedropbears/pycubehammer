@@ -72,42 +72,41 @@ class Turret:
     def at_negative_limit(self) -> bool:
         return not self.negative_limit_switch.get()
 
+    @feedback
+    def has_found_index(self) -> bool:
+        return self.index_found
+
     def find_index(self) -> None:
         self.index_found = False
 
     def execute(self) -> None:
-        current_angle = self.get_angle()
         if self.at_negative_limit() and self.at_positive_limit():
             self.motor.setVoltage(0)
             return
 
-        if self.at_negative_limit():
-            self.encoder.setPosition(NEGATIVE_LIMIT_ANGLE)
-            current_angle = NEGATIVE_LIMIT_ANGLE
-            self.rotation_controller.reset(current_angle)
-            self.index_found = True
-            self.motor.setVoltage(INDEX_SEARCH_VOLTAGE)
-            return
-
-        if self.at_positive_limit():
-            self.encoder.setPosition(POSITIVE_LIMIT_ANGLE)
-            current_angle = POSITIVE_LIMIT_ANGLE
-            self.rotation_controller.reset(current_angle)
-            self.index_found = True
-            self.motor.setVoltage(-INDEX_SEARCH_VOLTAGE)
-            return
+        self.maybe_rezero_off_limits_switches()
 
         if self.index_found:
             # calculate pid output based off angle delta
             pid_output = self.rotation_controller.calculate(
-                current_angle, self.goal_angle
+                self.get_angle(), self.goal_angle
             )
             # calcualte feed forward based off angle delta
-            # clamp input
-
             self.motor.setVoltage(pid_output)
         else:
             if self.index_search_positive:
                 self.motor.setVoltage(INDEX_SEARCH_VOLTAGE)
             else:
                 self.motor.setVoltage(-INDEX_SEARCH_VOLTAGE)
+
+    def maybe_rezero_off_limits_switches(self) -> None:
+        if self.at_negative_limit():
+            self.set_to_angle(NEGATIVE_LIMIT_ANGLE)
+        if self.at_positive_limit():
+            self.set_to_angle(POSITIVE_LIMIT_ANGLE)
+    
+    # override the current position to be angle
+    def set_to_angle(self, angle):
+        self.encoder.setPosition(angle)
+        self.rotation_controller.reset(angle)
+        self.index_found = True
