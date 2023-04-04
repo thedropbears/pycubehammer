@@ -8,10 +8,6 @@ from components.tilt import Tilt
 from components.turret import Turret
 from utilities.ballistics import GoalHeight, calculate_ballistics
 
-# Setpoints for intaking state
-INTAKE_AZIMUTH: float
-INTAKE_TILT: float
-
 
 class ShooterController(StateMachine):
     chassis_component: Chassis
