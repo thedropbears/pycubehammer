@@ -84,6 +84,8 @@ class Robot(magicbot.MagicRobot):
             if self.gamepad.getLeftBumperPressed():
                 self.shooter_controller.intake()
 
+            self.shooter_controller.execute()
+
         # shooter component
         if self.gamepad.getAButton():
             dpad_angle = self.gamepad.getPOV()
@@ -123,7 +125,6 @@ class Robot(magicbot.MagicRobot):
             if dpad_angle == 270:
                 self.shooter_component.stop()
 
-        # self.shooter_controller.execute()
         self.intake_component.execute()
         self.turret_component.execute()
         self.shooter_component.execute()
