@@ -107,6 +107,8 @@ class Turret:
 
     def on_enable(self) -> None:
         self.motor.setIdleMode(CANSparkMax.IdleMode.kBrake)
+        self.rotation_controller.reset(self.get_angle())
+        self.goal_angle = self.goal_angle()
 
     def on_disable(self) -> None:
         self.motor.setIdleMode(CANSparkMax.IdleMode.kCoast)
@@ -120,5 +122,4 @@ class Turret:
     # override the current angle to be angle
     def set_to_angle(self, angle):
         self.encoder.setPosition(angle)
-        self.rotation_controller.reset(angle)
         self.index_found = True
