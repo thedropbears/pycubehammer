@@ -92,7 +92,6 @@ class Turret:
             self.motor.setVoltage(INDEX_SEARCH_VOLTAGE)
             return
 
-
         if self.index_found:
             # calculate pid output based off angle delta
             pid_output = self.rotation_controller.calculate(
