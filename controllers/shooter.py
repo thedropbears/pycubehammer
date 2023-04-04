@@ -61,7 +61,9 @@ class ShooterController(StateMachine):
 
     def update_component_setpoints(self) -> None:
         bs = calculate_ballistics(
-            self.chassis_component.get_pose(), Pose2d(), self.goal_height_preference
+            self.chassis_component.get_pose(),
+            self.get_target_pose(),
+            self.goal_height_preference,
         )
         self.turret_component.set_angle(bs.turret_angle)
         self.tilt_component.set_angle(bs.tilt_angle)
@@ -73,6 +75,9 @@ class ShooterController(StateMachine):
             )
         else:
             self.shooter_component.stop()
+
+    def get_target_pose(self) -> Pose2d:
+        return Pose2d()
 
     def shoot(self) -> None:
         self.try_shoot = True
