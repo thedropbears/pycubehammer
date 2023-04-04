@@ -76,6 +76,14 @@ class Turret:
     def has_found_index(self) -> bool:
         return self.index_found
 
+    @feedback
+    def position_error(self) -> bool:
+        return self.rotation_controller.getPositionError()
+
+    @feedback
+    def velocity_error(self) -> bool:
+        return self.rotation_controller.getVelocityError()
+
     def find_index(self) -> None:
         self.index_found = False
 
