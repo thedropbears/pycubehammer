@@ -129,8 +129,10 @@ class Turret:
     def maybe_rezero_off_limits_switches(self) -> None:
         if self.at_negative_limit():
             self.set_to_angle(NEGATIVE_LIMIT_ANGLE)
+            self.rotation_controller.reset(NEGATIVE_LIMIT_ANGLE)
         if self.at_positive_limit():
             self.set_to_angle(POSITIVE_LIMIT_ANGLE)
+            self.rotation_controller.reset(POSITIVE_LIMIT_ANGLE)
 
     # override the current angle to be angle
     def set_to_angle(self, angle):
