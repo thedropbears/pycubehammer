@@ -121,6 +121,11 @@ class Turret:
     def on_disable(self) -> None:
         self.motor.setIdleMode(CANSparkMax.IdleMode.kCoast)
 
+    def disabled_periodic(self) -> None:
+        if self.has_found_index():
+            self.set_angle(self.get_angle())
+            self.rotation_controller.reset(self.get_angle())
+
     def maybe_rezero_off_limits_switches(self) -> None:
         if self.at_negative_limit():
             self.set_to_angle(NEGATIVE_LIMIT_ANGLE)
