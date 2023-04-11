@@ -45,7 +45,7 @@ class Tilt:
         # set the desired angle for the turret
         clamped_angle = min(angle, POSITIVE_SOFT_LIMIT_ANGLE)
         clamped_angle = max(clamped_angle, NEGATIVE_SOFT_LIMIT_ANGLE)
-        self.desired_angle = clamped_angle
+        self.goal_angle = clamped_angle
 
     @feedback
     def get_angle(self) -> float:
