@@ -1,50 +1,67 @@
 import math
 
+from magicbot import feedback
 from rev import CANSparkMax
+from wpilib import DoubleSolenoid, DutyCycleEncoder, PneumaticsModuleType
+from wpimath.controller import ProfiledPIDControllerRadians
+from wpimath.trajectory import TrapezoidProfileRadians
 
-from ids import SparkMaxIds
+from ids import DioChannels, PhChannels, SparkMaxIds
 
-GEAR_RATIO: float
-ANGLE_ERROR_TOLERANCE: float
 INTAKING_ANGLE: float = math.radians(90)
+ANGLE_ERROR_TOLERANCE: float = math.radians(1)
+MAX_ANGULAR_VELOCITY: float = 12.0
+MAX_ANGULAR_ACCELERATION: float = 0.5
+POSITIVE_SOFT_LIMIT_ANGLE: float = math.radians(90)
+NEGATIVE_SOFT_LIMIT_ANGLE: float = math.radians(-90)
+TILT_ENCODER_ANGLE_OFFSET: float = 0
 
 
 class Tilt:
-    # motor: Neo550 #This will need to change to the proper motor controller type
-    # encoder: This will likely be an absolute encoder like the one we used on the arm.
-    # ^^ note for this we want to use the absolute api from the start so we dont have a disaster at comp
-    # brake: solenoid #This will probably be a double solenoid
-
-    # goal_angle = 0.0
+    goal_angle = 0.0
 
     def __init__(self) -> None:
         self.motor = CANSparkMax(
             SparkMaxIds.tilt_motor, CANSparkMax.MotorType.kBrushless
         )
-        self.encoder = self.motor.getEncoder()
+        self.absolute_encoder = DutyCycleEncoder(DioChannels.tilt_absolute_encoder)
+        self.absolute_encoder.setDistancePerRotation(math.tau)
+        self.absolute_encoder.setPositionOffset(TILT_ENCODER_ANGLE_OFFSET)
+
+        self.brake = DoubleSolenoid(
+            PneumaticsModuleType.REVPH,
+            PhChannels.tilt_brake_forward,
+            PhChannels.tilt_brake_reverse,
+        )
+
+        rotation_contraints = TrapezoidProfileRadians.Constraints(
+            maxVelocity=MAX_ANGULAR_VELOCITY, maxAcceleration=MAX_ANGULAR_ACCELERATION
+        )
+        self.rotation_controller = ProfiledPIDControllerRadians(
+            32.0, 0.0, 0.0, rotation_contraints
+        )
 
     def set_angle(self, angle: float) -> None:
         # set the desired angle for the turret
-        math.radians(0)
+        clamped_angle = min(angle, POSITIVE_SOFT_LIMIT_ANGLE)
+        clamped_angle = max(clamped_angle, NEGATIVE_SOFT_LIMIT_ANGLE)
+        self.desired_angle = clamped_angle
 
-        # You will need to check the documentation if this can be on the output shaft
-        # or if you need to convert the angle back to a motor angle with the gear ratio
-
-        pass
+    @feedback
+    def get_angle(self) -> float:
+        return self.absolute_encoder.get()
 
     def goto_intaking(self) -> None:
         self.set_angle(INTAKING_ANGLE)
 
+    @feedback
     def at_angle(self) -> bool:
-        # return abs(current angle - reference) < Tolerance
+        current_angle = self.get_angle()
         # This could also be done inside the motor controller depending on how it works
-        return True
+        return abs(current_angle - self.goal_angle) < ANGLE_ERROR_TOLERANCE
 
     def execute(self) -> None:
-        # add logic for engaging and disengaging brake if it exists
-        # similar to the real build we will want to add a dead zone where it cant disengage after engaging so we dont drain the tanks too much
-        # calculate pid output based off angle delta
-        # calcualte feed forward based off angle delta
-        # clamp input
-        # set motor setpoint
-        pass
+        current_angle = self.get_angle()
+        pid_output = self.rotation_controller.calculate(current_angle, self.goal_angle)
+
+        self.motor.setVoltage(pid_output)
