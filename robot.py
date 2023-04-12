@@ -38,7 +38,8 @@ class Robot(magicbot.MagicRobot):
         pass
 
     def disabledPeriodic(self) -> None:
-        pass
+        self.turret_component.maybe_rezero_off_limits_switches()
+        self.turret_component.disabled_periodic()
 
     def autonomousInit(self) -> None:
         pass
