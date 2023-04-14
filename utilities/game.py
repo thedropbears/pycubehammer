@@ -1,5 +1,5 @@
-import wpilib
 import robotpy_apriltag
+import wpilib
 
 apriltag_layout = robotpy_apriltag.loadAprilTagLayoutField(
     robotpy_apriltag.AprilTagField.k2023ChargedUp
