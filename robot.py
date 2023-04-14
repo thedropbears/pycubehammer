@@ -4,8 +4,7 @@ from math import radians
 
 import magicbot
 import wpilib
-from wpimath.geometry import Quaternion, Rotation3d, Translation3d
-
+from wpimath.geometry import Rotation3d, Translation3d
 
 from components.chassis import Chassis
 from components.intake import Intake
@@ -13,9 +12,7 @@ from components.shooter import Shooter
 from components.tilt import Tilt
 from components.turret import Turret
 from components.vision import VisualLocaliser
-
 from controllers.shooter import ShooterController
-
 from utilities.scalers import rescale_js
 
 
@@ -44,26 +41,14 @@ class Robot(magicbot.MagicRobot):
         wpilib.SmartDashboard.putData(self.field)
 
         self.front_localiser_name = "cam_rear"
-        self.front_localiser_pos = Translation3d(-0.35001, 0.06583, 0.25)
-        self.front_localiser_rot = Rotation3d(
-            Quaternion(
-                0.0850897952914238,
-                0.21561633050441742,
-                -0.9725809097290039,
-                0.018864024430513382,
-            )
-        )
+        # Relative to turret centre
+        self.front_localiser_pos = Translation3d(0.05, 0.0, 0.25)
+        self.front_localiser_rot = Rotation3d.fromDegrees(0.0, 0.0, 0.0)
 
         self.rear_localiser_name = "cam_rear"
-        self.rear_localiser_pos = Translation3d(-0.35001, -0.06583, 0.247)
-        self.rear_localiser_rot = Rotation3d(
-            Quaternion(
-                0.08508981764316559,
-                -0.21561576426029205,
-                -0.9725810289382935,
-                -0.01886390522122383,
-            )
-        )
+        # Relative to turret centre
+        self.rear_localiser_pos = Translation3d(-0.05, 0.0, 0.25)
+        self.rear_localiser_rot = Rotation3d.fromDegrees(0.0, 0.0, 180.0)
 
     def disabledInit(self) -> None:
         pass
