@@ -4,6 +4,7 @@ from magicbot import feedback, tunable
 from rev import CANSparkMax
 from wpilib import DigitalInput
 from wpimath.controller import ProfiledPIDControllerRadians
+from wpimath.geometry import Translation3d
 from wpimath.trajectory import TrapezoidProfileRadians
 
 from ids import DioChannels, SparkMaxIds
@@ -22,6 +23,8 @@ NEGATIVE_SOFT_LIMIT_ANGLE: float = NEGATIVE_LIMIT_ANGLE + radians(5)
 class Turret:
     goal_angle = tunable(0.0)
     index_search_positive = tunable(True)
+
+    TRANSLATION3D: Translation3d = Translation3d(-0.2, 0, 0.3)
 
     def __init__(self) -> None:
         # Create the hardware object handles

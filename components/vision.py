@@ -9,6 +9,7 @@ from photonvision import PhotonCamera, PhotonTrackedTarget
 from wpimath.geometry import Pose2d, Rotation3d, Transform3d, Translation3d
 
 from components.chassis import Chassis
+from components.turret import Turret
 from utilities.game import apriltag_layout
 
 
@@ -35,9 +36,11 @@ class VisualLocaliser:
         field: wpilib.Field2d,
         data_log: wpiutil.log.DataLog,
         chassis_component: Chassis,
+        turret_component: Turret,
     ) -> None:
         self.camera = PhotonCamera(name)
-        self.camera_to_robot = Transform3d(pos, rot).inverse()
+        self.camera_rotation = rot
+        self.camera_position = pos
         self.last_timestamp = -1
 
         self.field_pos_obj = field.getObject("vision_pose_" + name)
@@ -46,6 +49,7 @@ class VisualLocaliser:
         )
 
         self.chassis_component = chassis_component
+        self.turret_component = turret_component
 
     def on_disable(self) -> None:
         self.add_to_estimator = False
@@ -68,8 +72,17 @@ class VisualLocaliser:
         if abs(wpilib.Timer.getFPGATimestamp() - timestamp) > 0.5:
             return
 
+        turret_rotation = Rotation3d.fromDegrees(
+            0, 0, math.degrees(self.turret_component.get_angle())
+        )
+
+        camera_rotation = self.camera_rotation.rotateBy(turret_rotation)
+        camera_position = (
+            self.camera_position.rotateBy(turret_rotation) + Turret.TRANSLATION3D
+        )
+        camera_to_robot = Transform3d(camera_position, camera_rotation).inverse()
         for target in results.getTargets():
-            poses = estimate_poses_from_apriltag(self.camera_to_robot, target)
+            poses = estimate_poses_from_apriltag(camera_to_robot, target)
             if poses is None:
                 # tag doesn't exist
                 continue
