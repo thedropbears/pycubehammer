@@ -16,11 +16,12 @@ MAX_ANGULAR_ACCELERATION: float = 2.0
 NEGATIVE_LIMIT_ANGLE: float = radians(-112)
 POSITIVE_LIMIT_ANGLE: float = radians(112)
 INDEX_SEARCH_VOLTAGE: float = 2.0
-POSITIVE_SOFT_LIMIT_ANGLE: float = POSITIVE_LIMIT_ANGLE - radians(5)
-NEGATIVE_SOFT_LIMIT_ANGLE: float = NEGATIVE_LIMIT_ANGLE + radians(5)
 
 
 class Turret:
+    POSITIVE_SOFT_LIMIT_ANGLE: float = POSITIVE_LIMIT_ANGLE - radians(5)
+    NEGATIVE_SOFT_LIMIT_ANGLE: float = NEGATIVE_LIMIT_ANGLE + radians(5)
+
     goal_angle = tunable(0.0)
     index_search_positive = tunable(True)
 
@@ -51,8 +52,8 @@ class Turret:
 
     def set_angle(self, angle: float) -> None:
         # set the desired angle for the turret
-        clamped_angle = min(angle, POSITIVE_SOFT_LIMIT_ANGLE)
-        clamped_angle = max(clamped_angle, NEGATIVE_SOFT_LIMIT_ANGLE)
+        clamped_angle = min(angle, Turret.POSITIVE_SOFT_LIMIT_ANGLE)
+        clamped_angle = max(clamped_angle, Turret.NEGATIVE_SOFT_LIMIT_ANGLE)
         self.goal_angle = clamped_angle
 
     @feedback

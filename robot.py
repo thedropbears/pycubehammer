@@ -4,7 +4,7 @@ from math import radians
 
 import magicbot
 import wpilib
-from wpimath.geometry import Rotation3d, Translation3d
+from wpimath.geometry import Pose2d, Rotation2d, Rotation3d, Translation3d
 
 from components.chassis import Chassis
 from components.intake import Intake
@@ -49,6 +49,20 @@ class Robot(magicbot.MagicRobot):
         # Relative to turret centre
         self.rear_localiser_pos = Translation3d(-0.05, 0.0, 0.25)
         self.rear_localiser_rot = Rotation3d.fromDegrees(0.0, 0.0, 180.0)
+
+    def robotPeriodic(self) -> None:
+        super().robotPeriodic()
+        self.field.getObject("target").setPose(
+            self.shooter_controller.get_target_pose()
+        )
+        abs_turret_rotation = Rotation2d(
+            self.chassis_component.get_pose().rotation().radians()
+            + self.turret_component.goal_angle
+        )
+        turret_pose = Pose2d(
+            self.chassis_component.get_pose().translation(), abs_turret_rotation
+        )
+        self.field.getObject("turret").setPose(turret_pose)
 
     def disabledInit(self) -> None:
         pass
