@@ -1,6 +1,13 @@
 import math
 
-from magicbot import StateMachine, default_state, state, timed_state, will_reset_to
+from magicbot import (
+    StateMachine,
+    default_state,
+    feedback,
+    state,
+    timed_state,
+    will_reset_to,
+)
 from wpimath.geometry import Rotation3d, Transform3d, Translation2d, Translation3d
 
 from components.chassis import Chassis
@@ -23,6 +30,7 @@ class ShooterController(StateMachine):
 
     def __init__(self) -> None:
         self.goal_height_preference = GoalHeight.HIGH  # default preference
+        self.goal_id = -1  # No valid selection until controller is run
 
     @state(first=True, must_finish=True)
     def preparing_intake(self) -> None:
@@ -93,6 +101,7 @@ class ShooterController(StateMachine):
 
     def get_target_position(self) -> tuple[Translation2d, float]:
         closest_distance = 99
+        best_id = -1
         tag_ids = [1, 2, 3] if game.is_red() else [6, 7, 8]
         robot_pose = self.chassis_component.get_pose()
 
@@ -103,7 +112,8 @@ class ShooterController(StateMachine):
             if d < closest_distance:
                 closest_distance = d
                 best_tag = tag
-
+                best_id = tag_id
+        self.goal_id = best_id
         # Offset the tag position to be at the centre of the relevant goal
         # Each goal is 42cm deep
         if self.goal_height_preference == GoalHeight.HIGH:
@@ -139,3 +149,7 @@ class ShooterController(StateMachine):
 
     def prefer_low(self) -> None:
         self.goal_height_preference = GoalHeight.LOW
+
+    @feedback
+    def get_goal_id(self) -> int:
+        return self.goal_id
