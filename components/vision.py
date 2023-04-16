@@ -126,10 +126,10 @@ class VisualLocaliser:
                 trans_error2: float = ground_truth_pose.translation().distance(
                     alt_pose.translation()
                 )
-                rot_error1: float = (  # type: ignore
+                rot_error1: float = (
                     ground_truth_pose.rotation() - best_pose.rotation()
                 ).radians()
-                rot_error2: float = (  # type: ignore
+                rot_error2: float = (
                     ground_truth_pose.rotation() - alt_pose.rotation()
                 ).radians()
                 skew = get_target_skew(target)
