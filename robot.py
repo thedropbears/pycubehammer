@@ -4,12 +4,14 @@ from math import radians
 
 import magicbot
 import wpilib
+from wpimath.geometry import Rotation3d, Translation3d
 
 from components.chassis import Chassis
 from components.intake import Intake
 from components.shooter import Shooter
 from components.tilt import Tilt
 from components.turret import Turret
+from components.vision import VisualLocaliser
 from controllers.shooter import ShooterController
 from utilities.scalers import rescale_js
 
@@ -24,15 +26,29 @@ class Robot(magicbot.MagicRobot):
     shooter_component: Shooter
     tilt_component: Tilt
     turret_component: Turret
+    front_localiser: VisualLocaliser
+    rear_localiser: VisualLocaliser
 
     SPIN_RATE = 4
     MAX_SPEED = magicbot.tunable(Chassis.max_wheel_speed * 0.95)
 
     def createObjects(self) -> None:
+        self.data_log = wpilib.DataLogManager.getLog()
+
         self.gamepad = wpilib.XboxController(0)
 
         self.field = wpilib.Field2d()
         wpilib.SmartDashboard.putData(self.field)
+
+        self.front_localiser_name = "cam_rear"
+        # Relative to turret centre
+        self.front_localiser_pos = Translation3d(0.05, 0.0, 0.25)
+        self.front_localiser_rot = Rotation3d.fromDegrees(0.0, 0.0, 0.0)
+
+        self.rear_localiser_name = "cam_rear"
+        # Relative to turret centre
+        self.rear_localiser_pos = Translation3d(-0.05, 0.0, 0.25)
+        self.rear_localiser_rot = Rotation3d.fromDegrees(0.0, 0.0, 180.0)
 
     def disabledInit(self) -> None:
         pass
@@ -40,6 +56,10 @@ class Robot(magicbot.MagicRobot):
     def disabledPeriodic(self) -> None:
         self.turret_component.maybe_rezero_off_limits_switches()
         self.turret_component.disabled_periodic()
+
+        self.chassis_component.update_odometry()
+        self.front_localiser.execute()
+        self.rear_localiser.execute()
 
     def autonomousInit(self) -> None:
         pass
@@ -127,6 +147,11 @@ class Robot(magicbot.MagicRobot):
         self.turret_component.execute()
         self.shooter_component.execute()
         self.shooter_controller.try_shoot = False
+
+        # Vision and odometry
+        self.chassis_component.update_odometry()
+        self.front_localiser.execute()
+        self.rear_localiser.execute()
 
 
 if __name__ == "__main__":
