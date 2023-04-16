@@ -151,5 +151,9 @@ class ShooterController(StateMachine):
         self.goal_height_preference = GoalHeight.LOW
 
     @feedback
+    def get_goal_height_preference(self) -> str:
+        return str(self.goal_height_preference)
+
+    @feedback
     def get_goal_id(self) -> int:
         return self.goal_id
