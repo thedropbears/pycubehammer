@@ -77,7 +77,7 @@ class ShooterController(StateMachine):
             # We are already flipped, so keep it flipped
             bs.turret_angle -= math.pi
             bs.tilt_angle = -bs.tilt_angle
-        if bs.turret_angle < math.pi / 2.0 and self.turret_component.get_angle() > 0.0:
+        if bs.turret_angle < -math.pi / 2.0 and self.turret_component.get_angle() > 0.0:
             # We are already flipped, so keep it flipped
             bs.turret_angle += math.pi
             bs.tilt_angle = -bs.tilt_angle
