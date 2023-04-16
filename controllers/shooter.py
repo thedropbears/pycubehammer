@@ -1,3 +1,5 @@
+import math
+
 from magicbot import StateMachine, default_state, state, timed_state, will_reset_to
 from wpimath.geometry import Pose2d
 
@@ -61,6 +63,25 @@ class ShooterController(StateMachine):
             self.get_target_pose(),
             self.goal_height_preference,
         )
+        # Check to see if we need to flip the shooter around
+        # If we are beyond the turret endpoints we have to flip
+        if bs.turret_angle < Turret.NEGATIVE_SOFT_LIMIT_ANGLE:
+            bs.turret_angle += math.pi
+            bs.tilt_angle = -bs.tilt_angle
+        if bs.turret_angle > Turret.POSITIVE_SOFT_LIMIT_ANGLE:
+            bs.turret_angle -= math.pi
+            bs.tilt_angle = -bs.tilt_angle
+
+        # We also have an overlap zone so that we don't keep flipping back and forth
+        if bs.turret_angle > math.pi / 2.0 and self.turret_component.get_angle() < 0.0:
+            # We are already flipped, so keep it flipped
+            bs.turret_angle -= math.pi
+            bs.tilt_angle = -bs.tilt_angle
+        if bs.turret_angle < math.pi / 2.0 and self.turret_component.get_angle() > 0.0:
+            # We are already flipped, so keep it flipped
+            bs.turret_angle += math.pi
+            bs.tilt_angle = -bs.tilt_angle
+
         self.turret_component.set_angle(bs.turret_angle)
         self.tilt_component.set_angle(bs.tilt_angle)
         # We can be tracking the targets even if we don't have a cube
