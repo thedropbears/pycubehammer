@@ -52,9 +52,8 @@ class Robot(magicbot.MagicRobot):
 
     def robotPeriodic(self) -> None:
         super().robotPeriodic()
-        self.field.getObject("target").setPose(
-            self.shooter_controller.get_target_pose()
-        )
+        position, _ = self.shooter_controller.get_target_position()
+        self.field.getObject("target").setPose(Pose2d(position, Rotation2d()))
         abs_turret_rotation = Rotation2d(
             self.chassis_component.get_pose().rotation().radians()
             + self.turret_component.goal_angle
