@@ -41,9 +41,6 @@ class PhChannels(enum.IntEnum):
     intake_piston_forward = 4
     intake_piston_reverse = 5
 
-    tilt_brake_forward = 2
-    tilt_brake_reverse = 3
-
 
 @enum.unique
 class PwmChannels(enum.IntEnum):
