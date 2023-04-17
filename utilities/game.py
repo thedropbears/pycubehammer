@@ -2,7 +2,7 @@ import typing
 
 import robotpy_apriltag
 import wpilib
-from wpimath.geometry import Pose2d, Pose3d, Translation2d
+from wpimath.geometry import Pose2d, Pose3d
 
 apriltag_layout = robotpy_apriltag.loadAprilTagLayoutField(
     robotpy_apriltag.AprilTagField.k2023ChargedUp
@@ -32,18 +32,16 @@ def find_closest_tag(robot_pose: Pose2d) -> tuple[Pose3d, int]:
     # Use the first tag to set a baseline for distance
     best_id = tag_ids[0]
     best_tag = apriltag_layout.getTagPose(best_id)
-    
-    assert best_tag != None
-    
+
+    assert best_tag is not None
+
     closest_distance = robot_pose.translation().distance(
         best_tag.toPose2d().translation()
     )
 
     for tag_id in tag_ids[1:]:
         tag = apriltag_layout.getTagPose(tag_id)
-        d = robot_pose.translation().distance(
-        tag.toPose2d().translation()
-    )
+        d = robot_pose.translation().distance(tag.toPose2d().translation())
         if d < closest_distance:
             closest_distance = d
             best_tag = tag
