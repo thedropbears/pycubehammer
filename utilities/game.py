@@ -26,23 +26,26 @@ def get_team() -> wpilib.DriverStation.Alliance:
     return wpilib.DriverStation.getAlliance()
 
 
-def pose3d_to_translation2d(pose3d: Pose3d) -> Translation2d:
-    return Translation2d(pose3d.x, pose3d.y)
-
-
 def find_closest_tag(robot_pose: Pose2d) -> tuple[Pose3d, int]:
     tag_ids = [1, 2, 3] if is_red() else [6, 7, 8]
 
     # Use the first tag to set a baseline for distance
     best_id = tag_ids[0]
     best_tag = apriltag_layout.getTagPose(best_id)
-    closest_distance = robot_pose.translation().distance(pose3d_to_translation2d(best_tag))  # type: ignore
+    
+    assertbest_tag != None
+    
+    closest_distance = robot_pose.translation().distance(
+        best_tag.toPose2d().translation()
+    )
 
     for tag_id in tag_ids[1:]:
         tag = apriltag_layout.getTagPose(tag_id)
-        d = robot_pose.translation().distance(pose3d_to_translation2d(tag))  # type: ignore
+        d = robot_pose.translation().distance(
+        tag.toPose2d().translation()
+    )
         if d < closest_distance:
             closest_distance = d
             best_tag = tag
             best_id = tag_id
-    return best_tag, best_id  # type: ignore
+    return best_tag, best_id
