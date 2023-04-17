@@ -8,7 +8,7 @@ from magicbot import (
     timed_state,
     will_reset_to,
 )
-from wpimath.geometry import Rotation3d, Transform3d, Translation2d, Translation3d
+from wpimath.geometry import Rotation3d, Transform3d, Translation3d
 
 from components.chassis import Chassis
 from components.intake import Intake
@@ -67,8 +67,8 @@ class ShooterController(StateMachine):
         self.shooter_component.shoot()
 
     def update_component_setpoints(self) -> None:
-        position, height = self.get_target_position()
-        bs = calculate_ballistics(self.chassis_component.get_pose(), position, height)
+        position = self.get_target_position()
+        bs = calculate_ballistics(self.chassis_component.get_pose(), position)
         # Check to see if we need to flip the shooter around
         # If we are beyond the turret endpoints we have to flip
         if bs.turret_angle < Turret.NEGATIVE_SOFT_LIMIT_ANGLE:
@@ -99,7 +99,7 @@ class ShooterController(StateMachine):
         else:
             self.shooter_component.stop()
 
-    def get_target_position(self) -> tuple[Translation2d, float]:
+    def get_target_position(self) -> Translation3d:
         robot_pose = self.chassis_component.get_pose()
         best_tag_position, self.goal_id = game.find_closest_tag(robot_pose)
         # Offset the tag position to be at the centre of the relevant goal
@@ -120,7 +120,7 @@ class ShooterController(StateMachine):
         transform = Transform3d(translation, Rotation3d())
 
         target = best_tag_position.transformBy(transform)
-        return Translation2d(target.x, target.y), target.z
+        return target.translation()
 
     def shoot(self) -> None:
         self.try_shoot = True

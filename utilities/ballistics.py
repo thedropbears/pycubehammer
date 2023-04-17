@@ -2,7 +2,7 @@ import math
 from dataclasses import dataclass
 from enum import Enum
 
-from wpimath.geometry import Pose2d, Translation2d
+from wpimath.geometry import Pose2d, Translation3d
 
 from utilities.functions import constrain_angle
 
@@ -22,10 +22,12 @@ class BallisticsSolution:
 
 
 def calculate_ballistics(
-    robot_pose: Pose2d, target_pose: Translation2d, target_height: GoalHeight
+    robot_pose: Pose2d, target_position: Translation3d
 ) -> BallisticsSolution:
-    azimuth = math.atan2(target_pose.y - robot_pose.y, target_pose.x - robot_pose.x)
-    turret_angle = constrain_angle(azimuth - robot_pose.rotation().radians())  # type: ignore
+    azimuth = math.atan2(
+        target_position.y - robot_pose.y, target_position.x - robot_pose.x
+    )
+    turret_angle = constrain_angle(azimuth - robot_pose.rotation().radians())
     bs = BallisticsSolution(
         turret_angle=turret_angle,
         tilt_angle=math.radians(45),
