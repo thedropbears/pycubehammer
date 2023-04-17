@@ -25,7 +25,7 @@ def calculate_ballistics(
     robot_pose: Pose2d, target_pose: Translation2d, target_height: GoalHeight
 ) -> BallisticsSolution:
     azimuth = math.atan2(target_pose.y - robot_pose.y, target_pose.x - robot_pose.x)
-    turret_angle = constrain_angle(azimuth - robot_pose.rotation().radians())
+    turret_angle = constrain_angle(azimuth - robot_pose.rotation().radians())  # type: ignore
     bs = BallisticsSolution(
         turret_angle=turret_angle,
         tilt_angle=math.radians(45),

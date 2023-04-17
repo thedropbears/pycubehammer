@@ -100,20 +100,8 @@ class ShooterController(StateMachine):
             self.shooter_component.stop()
 
     def get_target_position(self) -> tuple[Translation2d, float]:
-        closest_distance = 99
-        best_id = -1
-        tag_ids = [1, 2, 3] if game.is_red() else [6, 7, 8]
         robot_pose = self.chassis_component.get_pose()
-
-        for tag_id in tag_ids:
-            tag = game.apriltag_layout.getTagPose(tag_id)
-            tag_2d = Translation2d(tag.x, tag.y)
-            d = robot_pose.translation().distance(tag_2d)
-            if d < closest_distance:
-                closest_distance = d
-                best_tag = tag
-                best_id = tag_id
-        self.goal_id = best_id
+        best_tag_position, self.goal_id = game.find_closest_tag(robot_pose)
         # Offset the tag position to be at the centre of the relevant goal
         # Each goal is 42cm deep
         if self.goal_height_preference == GoalHeight.HIGH:
@@ -131,7 +119,7 @@ class ShooterController(StateMachine):
         translation = Translation3d(depth, 0.0, height)
         transform = Transform3d(translation, Rotation3d())
 
-        target = best_tag.transformBy(transform)
+        target = best_tag_position.transformBy(transform)
         return Translation2d(target.x, target.y), target.z
 
     def shoot(self) -> None:
