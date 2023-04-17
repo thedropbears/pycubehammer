@@ -31,17 +31,14 @@ def find_closest_tag(robot_pose: Pose2d) -> tuple[Pose3d, int]:
 
     # Use the first tag to set a baseline for distance
     best_id = tag_ids[0]
-    best_tag = apriltag_layout.getTagPose(best_id)
-
-    assert best_tag is not None
+    best_tag = get_fiducial_pose(best_id)
 
     closest_distance = robot_pose.translation().distance(
         best_tag.toPose2d().translation()
     )
 
     for tag_id in tag_ids[1:]:
-        tag = apriltag_layout.getTagPose(tag_id)
-        assert tag is not None
+        tag = get_fiducial_pose(tag_id)
         d = robot_pose.translation().distance(tag.toPose2d().translation())
         if d < closest_distance:
             closest_distance = d
