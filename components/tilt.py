@@ -2,11 +2,11 @@ import math
 
 from magicbot import feedback
 from rev import CANSparkMax
-from wpilib import DoubleSolenoid, DutyCycleEncoder, PneumaticsModuleType
+from wpilib import DutyCycleEncoder
 from wpimath.controller import ProfiledPIDControllerRadians
 from wpimath.trajectory import TrapezoidProfileRadians
 
-from ids import DioChannels, PhChannels, SparkMaxIds
+from ids import DioChannels, SparkMaxIds
 
 INTAKING_ANGLE: float = math.radians(90)
 ANGLE_ERROR_TOLERANCE: float = math.radians(1)
@@ -27,12 +27,6 @@ class Tilt:
         self.absolute_encoder = DutyCycleEncoder(DioChannels.tilt_absolute_encoder)
         self.absolute_encoder.setDistancePerRotation(math.tau)
         self.absolute_encoder.setPositionOffset(TILT_ENCODER_ANGLE_OFFSET)
-
-        self.brake = DoubleSolenoid(
-            PneumaticsModuleType.REVPH,
-            PhChannels.tilt_brake_forward,
-            PhChannels.tilt_brake_reverse,
-        )
 
         rotation_contraints = TrapezoidProfileRadians.Constraints(
             maxVelocity=MAX_ANGULAR_VELOCITY, maxAcceleration=MAX_ANGULAR_ACCELERATION
