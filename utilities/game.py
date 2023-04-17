@@ -41,6 +41,7 @@ def find_closest_tag(robot_pose: Pose2d) -> tuple[Pose3d, int]:
 
     for tag_id in tag_ids[1:]:
         tag = apriltag_layout.getTagPose(tag_id)
+        assert tag is not None
         d = robot_pose.translation().distance(tag.toPose2d().translation())
         if d < closest_distance:
             closest_distance = d
