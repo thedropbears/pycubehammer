@@ -4,7 +4,13 @@ from math import radians
 
 import magicbot
 import wpilib
-from wpimath.geometry import Pose2d, Rotation2d, Rotation3d, Translation3d
+from wpimath.geometry import (
+    Pose2d,
+    Rotation2d,
+    Rotation3d,
+    Translation2d,
+    Translation3d,
+)
 
 from components.chassis import Chassis
 from components.intake import Intake
@@ -52,8 +58,9 @@ class Robot(magicbot.MagicRobot):
 
     def robotPeriodic(self) -> None:
         super().robotPeriodic()
+        position = self.shooter_controller.get_target_position()
         self.field.getObject("target").setPose(
-            self.shooter_controller.get_target_pose()
+            Pose2d(Translation2d(position.x, position.y), Rotation2d())
         )
         abs_turret_rotation = Rotation2d(
             self.chassis_component.get_pose().rotation().radians()

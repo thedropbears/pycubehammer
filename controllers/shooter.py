@@ -1,13 +1,21 @@
 import math
 
-from magicbot import StateMachine, default_state, state, timed_state, will_reset_to
-from wpimath.geometry import Pose2d
+from magicbot import (
+    StateMachine,
+    default_state,
+    feedback,
+    state,
+    timed_state,
+    will_reset_to,
+)
+from wpimath.geometry import Rotation3d, Transform3d, Translation3d
 
 from components.chassis import Chassis
 from components.intake import Intake
 from components.shooter import Shooter
 from components.tilt import Tilt
 from components.turret import Turret
+from utilities import game
 from utilities.ballistics import GoalHeight, calculate_ballistics
 
 
@@ -22,6 +30,7 @@ class ShooterController(StateMachine):
 
     def __init__(self) -> None:
         self.goal_height_preference = GoalHeight.HIGH  # default preference
+        self.goal_id = -1  # No valid selection until controller is run
 
     @state(first=True, must_finish=True)
     def preparing_intake(self) -> None:
@@ -58,11 +67,8 @@ class ShooterController(StateMachine):
         self.shooter_component.shoot()
 
     def update_component_setpoints(self) -> None:
-        bs = calculate_ballistics(
-            self.chassis_component.get_pose(),
-            self.get_target_pose(),
-            self.goal_height_preference,
-        )
+        position = self.get_target_position()
+        bs = calculate_ballistics(self.chassis_component.get_pose(), position)
         # Check to see if we need to flip the shooter around
         # If we are beyond the turret endpoints we have to flip
         if bs.turret_angle < Turret.NEGATIVE_SOFT_LIMIT_ANGLE:
@@ -93,8 +99,28 @@ class ShooterController(StateMachine):
         else:
             self.shooter_component.stop()
 
-    def get_target_pose(self) -> Pose2d:
-        return Pose2d()
+    def get_target_position(self) -> Translation3d:
+        robot_pose = self.chassis_component.get_pose()
+        best_tag_position, self.goal_id = game.find_closest_tag(robot_pose)
+        # Offset the tag position to be at the centre of the relevant goal
+        # Each goal is 42cm deep
+        if self.goal_height_preference == GoalHeight.HIGH:
+            depth = -(0.42 + 0.42 / 2.0)
+            height = 0.45
+        elif self.goal_height_preference == GoalHeight.MID:
+            depth = -0.42 / 2.0
+            height = 0.05
+        else:
+            depth = 0.42 / 2.0
+            height = -0.45
+        if game.is_red():
+            depth = -depth
+
+        translation = Translation3d(depth, 0.0, height)
+        transform = Transform3d(translation, Rotation3d())
+
+        target = best_tag_position.transformBy(transform)
+        return target.translation()
 
     def shoot(self) -> None:
         self.try_shoot = True
@@ -111,3 +137,11 @@ class ShooterController(StateMachine):
 
     def prefer_low(self) -> None:
         self.goal_height_preference = GoalHeight.LOW
+
+    @feedback
+    def get_goal_height_preference(self) -> str:
+        return str(self.goal_height_preference)
+
+    @feedback
+    def get_goal_id(self) -> int:
+        return self.goal_id
