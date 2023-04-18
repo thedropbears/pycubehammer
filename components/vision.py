@@ -19,7 +19,7 @@ class VisualLocaliser:
     using information from a single PhotonVision camera.
     """
 
-    add_to_estimator = tunable(False)
+    add_to_estimator = tunable(True)
     should_log = tunable(False)
 
     rejected_in_row = tunable(0.0)
@@ -50,12 +50,6 @@ class VisualLocaliser:
 
         self.chassis_component = chassis_component
         self.turret_component = turret_component
-
-    def on_disable(self) -> None:
-        self.add_to_estimator = False
-
-    def on_enable(self) -> None:
-        self.add_to_estimator = True
 
     def execute(self) -> None:
         # if results didn't see any targets
