@@ -7,6 +7,7 @@ from wpimath.controller import ProfiledPIDControllerRadians
 from wpimath.trajectory import TrapezoidProfileRadians
 
 from ids import DioChannels, SparkMaxIds
+from utilities.functions import clamp
 
 INTAKING_ANGLE: float = math.radians(90)
 ANGLE_ERROR_TOLERANCE: float = math.radians(1)
@@ -37,9 +38,9 @@ class Tilt:
 
     def set_angle(self, angle: float) -> None:
         # set the desired angle for the turret
-        clamped_angle = min(angle, POSITIVE_SOFT_LIMIT_ANGLE)
-        clamped_angle = max(clamped_angle, NEGATIVE_SOFT_LIMIT_ANGLE)
-        self.goal_angle = clamped_angle
+        self.goal_angle = clamp(
+            angle, NEGATIVE_SOFT_LIMIT_ANGLE, POSITIVE_SOFT_LIMIT_ANGLE
+        )
 
     @feedback
     def get_angle(self) -> float:
