@@ -64,10 +64,10 @@ class Robot(magicbot.MagicRobot):
     def robotInit(self) -> None:
         super().robotInit()
         # Bind events to component methods after components are created.
-        self.pov_up.ifHigh(self.shooter_controller.select_up)
-        self.pov_down.ifHigh(self.shooter_controller.select_down)
-        self.pov_left.ifHigh(self.shooter_controller.select_left)
-        self.pov_right.ifHigh(self.shooter_controller.select_right)
+        self.pov_up.rising().ifHigh(self.shooter_controller.select_up)
+        self.pov_down.rising().ifHigh(self.shooter_controller.select_down)
+        self.pov_left.rising().ifHigh(self.shooter_controller.select_left)
+        self.pov_right.rising().ifHigh(self.shooter_controller.select_right)
 
     def robotPeriodic(self) -> None:
         super().robotPeriodic()
