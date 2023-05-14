@@ -113,8 +113,6 @@ class ShooterController(StateMachine):
         else:
             depth = 0.42 / 2.0
             height = -0.45
-        if game.is_red():
-            depth = -depth
 
         translation = Translation3d(depth, 0.0, height)
         transform = Transform3d(translation, Rotation3d())
