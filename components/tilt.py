@@ -15,7 +15,7 @@ MAX_ANGULAR_VELOCITY: float = 12.0
 MAX_ANGULAR_ACCELERATION: float = 0.5
 POSITIVE_SOFT_LIMIT_ANGLE: float = math.radians(90)
 NEGATIVE_SOFT_LIMIT_ANGLE: float = math.radians(-90)
-TILT_ENCODER_ANGLE_OFFSET: float = 0
+TILT_ENCODER_ANGLE_OFFSET: float = 0.9012
 
 
 class Tilt:
@@ -26,7 +26,7 @@ class Tilt:
             SparkMaxIds.tilt_motor, CANSparkMax.MotorType.kBrushless
         )
         self.absolute_encoder = DutyCycleEncoder(DioChannels.tilt_absolute_encoder)
-        self.absolute_encoder.setDistancePerRotation(math.tau)
+        self.absolute_encoder.setDistancePerRotation(-math.pi)
         self.absolute_encoder.setPositionOffset(TILT_ENCODER_ANGLE_OFFSET)
 
         rotation_contraints = TrapezoidProfileRadians.Constraints(
