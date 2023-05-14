@@ -116,12 +116,13 @@ class Robot(magicbot.MagicRobot):
                 self.turret_component.set_angle(radians(turret_angle))
 
         # Tilt component
-        if self.gamepad.getAButton():
+        if self.gamepad.getBButton():
             dpad_angle = self.gamepad.getPOV()
-            if dpad_angle <= 90:
-                self.tilt_component.set_angle(dpad_angle)
-            elif dpad_angle >= 270:
-                self.tilt_component.set_angle(dpad_angle - 360)
+            if dpad_angle != -1:
+                if dpad_angle <= 90:
+                    self.tilt_component.set_angle(radians(dpad_angle))
+                elif dpad_angle >= 270:
+                    self.tilt_component.set_angle(radians(dpad_angle - 360))
 
         # shooter controller
         if self.gamepad.getXButton():
@@ -174,6 +175,7 @@ class Robot(magicbot.MagicRobot):
 
         self.intake_component.execute()
         self.turret_component.execute()
+        self.tilt_component.execute()
         self.shooter_component.execute()
         self.shooter_controller.try_shoot = False
 
