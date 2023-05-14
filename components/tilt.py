@@ -3,6 +3,7 @@ import math
 GEAR_RATIO: float
 ANGLE_ERROR_TOLERANCE: float
 INTAKING_ANGLE: float = math.radians(90)
+MAX_ANGLE: float = math.radians(60)
 
 
 class Tilt:
@@ -27,6 +28,9 @@ class Tilt:
 
     def goto_intaking(self) -> None:
         self.set_angle(INTAKING_ANGLE)
+
+    def goto_pre_intake(self) -> None:
+        self.set_angle(MAX_ANGLE)
 
     def at_angle(self) -> bool:
         # return abs(current angle - reference) < Tolerance
