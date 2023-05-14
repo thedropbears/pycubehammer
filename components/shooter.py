@@ -1,17 +1,18 @@
 from math import radians
 
+from ctre import WPI_TalonSRX
 from magicbot import tunable
 from rev import CANSparkMax
-from wpilib import DigitalInput
 from wpimath.controller import PIDController
 
-from ids import DioChannels, SparkMaxIds
+from ids import SparkMaxIds, TalonIds
 
 FLYWHEEL_SPEED_ERROR_TOLERANCE: float = radians(1)
 
+BACK_MOTOR_SHOOTING_SPEED: float = -1
+BACK_MOTOR_INTAKE_SPEED: float = 0.15
 
-BACK_MOTOR_SHOOTING_SPEED: float = 600
-INTAKE_SPEED: float = -80
+FLYWHEEL_INTAKE_SPEED: float = -80
 
 
 class Shooter:
@@ -28,19 +29,13 @@ class Shooter:
         self.bottom_flywheel = CANSparkMax(
             SparkMaxIds.bottom_flywheel, CANSparkMax.MotorType.kBrushless
         )
-        self.back_motor = CANSparkMax(
-            SparkMaxIds.back_motor, CANSparkMax.MotorType.kBrushless
-        )
+        self.back_motor = WPI_TalonSRX(TalonIds.shooter_back)
 
         self.top_flywheel_encoder = self.top_flywheel.getEncoder()
         self.bottom_flywheel_encoder = self.bottom_flywheel.getEncoder()
-        self.back_motor_encoder = self.back_motor.getEncoder()
 
         self.top_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
         self.bottom_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
-        self.back_motor_speed_controller = PIDController(1.0, 0.0, 0.0)
-
-        self.loaded_switch = DigitalInput(DioChannels.loaded_shooter)
 
     def set_flywheel_speed(
         self, top_flywheel_speed: float, bottom_flywheel_speed: float
@@ -75,13 +70,13 @@ class Shooter:
         )
 
     def load(self) -> None:
-        self.top_flywheel_speed = INTAKE_SPEED
-        self.bottom_flywheel_speed = INTAKE_SPEED
-        self.back_motor_speed = INTAKE_SPEED
+        self.top_flywheel_speed = FLYWHEEL_INTAKE_SPEED
+        self.bottom_flywheel_speed = FLYWHEEL_INTAKE_SPEED
+        self.back_motor_speed = BACK_MOTOR_INTAKE_SPEED
 
     def is_loaded(self) -> bool:
-        # return state of loaded switch
-        return not self.loaded_switch.get()
+        """Get whether the shooter is loaded."""
+        return bool(self.back_motor.isFwdLimitSwitchClosed())
 
     def stop(self) -> None:
         self.top_flywheel_speed = 0.0
@@ -101,14 +96,11 @@ class Shooter:
         # bottom_voltage = self.bottom_flywheel_speed_controller.calculate(
         #     self.bottom_flywheel_encoder.getVelocity(), self.bottom_flywheel_speed
         # )
-        # back_voltage = self.back_motor_speed_controller.calculate(
-        #     self.back_motor_encoder.getVelocity(), self.back_motor_speed
-        # )
         top_voltage = self.top_flywheel_speed / 600 * 12
 
         bottom_voltage = self.bottom_flywheel_speed / 600 * 12
 
-        back_voltage = self.back_motor_speed / 600 * 12
+        back_voltage = self.back_motor_speed * 12
 
         self.top_flywheel.setVoltage(top_voltage)
         self.bottom_flywheel.setVoltage(bottom_voltage)

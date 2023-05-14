@@ -15,6 +15,8 @@ class TalonIds(enum.IntEnum):
     drive_4 = 4
     steer_4 = 8
 
+    shooter_back = 12
+
 
 @enum.unique
 class CancoderIds(enum.IntEnum):
@@ -31,7 +33,6 @@ class SparkMaxIds(enum.IntEnum):
     turret_motor = 1
     top_flywheel = 10
     bottom_flywheel = 11
-    back_motor = 12
 
 
 @enum.unique
@@ -49,4 +50,3 @@ class PwmChannels(enum.IntEnum):
 class DioChannels(enum.IntEnum):
     positive_turret_switch = 1
     negative_turret_switch = 2
-    loaded_shooter = 0
