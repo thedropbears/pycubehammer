@@ -26,6 +26,8 @@ class Tilt:
         self.motor = CANSparkMax(
             SparkMaxIds.tilt_motor, CANSparkMax.MotorType.kBrushless
         )
+        self.motor.setIdleMode(CANSparkMax.IdleMode.kBrake)
+
         self.absolute_encoder = DutyCycleEncoder(DioChannels.tilt_absolute_encoder)
         self.absolute_encoder.setDistancePerRotation(-math.pi)
         self.absolute_encoder.setPositionOffset(TILT_ENCODER_ANGLE_OFFSET)
@@ -34,7 +36,7 @@ class Tilt:
             maxVelocity=MAX_ANGULAR_VELOCITY, maxAcceleration=MAX_ANGULAR_ACCELERATION
         )
         self.rotation_controller = ProfiledPIDControllerRadians(
-            10.0, 0.0, 0.0, rotation_contraints
+            8.0, 0.0, 0.0, rotation_contraints
         )
         SmartDashboard.putData("tilt_pid", self.rotation_controller)
 
@@ -55,7 +57,7 @@ class Tilt:
         return self.absolute_encoder.getDistance()
 
     def goto_intaking(self) -> None:
-        self.set_angle(INTAKING_ANGLE)
+        self.goal_angle = INTAKING_ANGLE
 
     def goto_pre_intake(self) -> None:
         self.set_angle(MAX_ANGLE)
