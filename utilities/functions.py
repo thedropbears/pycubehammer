@@ -1,5 +1,9 @@
 import math
+import typing
+from collections.abc import Sequence
+from typing import Callable
 
+import numpy as np
 from wpimath.geometry import Rotation2d
 from wpimath.kinematics import SwerveModuleState
 
@@ -60,3 +64,10 @@ def clamp_2d(val: tuple[float, float], radius: float) -> tuple[float, float]:
         return (0, 0)
     new_mag = min(mag, radius)
     return new_mag * val[0] / mag, new_mag * val[1] / mag
+
+
+# Workaround for numpy typing bug
+interpolate = typing.cast(
+    Callable[[float, Sequence[float], Sequence[float]], float],
+    np.interp,
+)
