@@ -44,7 +44,13 @@ class Tilt:
 
     @feedback
     def get_angle(self) -> float:
-        return self.absolute_encoder.get()
+        """
+        Get the tilt angle in radians.
+
+        0 is the shooter pointing upwards along the vertical axis,
+        positive downwards along the front of the shooter.
+        """
+        return self.absolute_encoder.getDistance()
 
     def goto_intaking(self) -> None:
         self.set_angle(INTAKING_ANGLE)
