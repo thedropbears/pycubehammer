@@ -1,6 +1,6 @@
 import math
 
-from magicbot import feedback
+from magicbot import feedback, tunable
 from rev import CANSparkMax
 from wpilib import DutyCycleEncoder, SmartDashboard
 from wpimath.controller import ProfiledPIDControllerRadians
@@ -19,7 +19,7 @@ TILT_ENCODER_ANGLE_OFFSET: float = 0.9012
 
 
 class Tilt:
-    goal_angle = 0.0
+    goal_angle = tunable(0.0)
 
     def __init__(self) -> None:
         self.motor = CANSparkMax(
