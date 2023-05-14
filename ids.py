@@ -15,6 +15,7 @@ class TalonIds(enum.IntEnum):
     drive_4 = 4
     steer_4 = 8
 
+    intake_tunnel = 10
     shooter_back = 12
 
 
