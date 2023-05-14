@@ -2,10 +2,9 @@ import math
 from dataclasses import dataclass
 from enum import Enum
 
-import numpy as np
 from wpimath.geometry import Pose2d, Translation3d
 
-from utilities.functions import constrain_angle
+from utilities.functions import constrain_angle, interpolate
 
 
 class GoalHeight(Enum):
@@ -75,9 +74,9 @@ def _interp(
     top_speeds: list[float],
     bottom_speeds: list[float],
 ) -> BallisticsSolution:
-    angle = np.interp(target_range, ranges, angles)
-    top_speed = np.interp(target_range, ranges, top_speeds)
-    bottom_speed = np.interp(target_range, ranges, bottom_speeds)
+    angle = interpolate(target_range, ranges, angles)
+    top_speed = interpolate(target_range, ranges, top_speeds)
+    bottom_speed = interpolate(target_range, ranges, bottom_speeds)
     bs = BallisticsSolution(
         turret_angle=0,
         tilt_angle=angle,
