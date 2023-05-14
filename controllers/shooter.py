@@ -55,10 +55,6 @@ class ShooterController(StateMachine):
     def recovery(self) -> None:
         # raises tilt to move turret
         self.tilt_component.goto_pre_intake()
-        bs = calculate_ballistics(
-            self.chassis_component.get_pose(), Pose2d(), self.goal_height_preference
-        )
-        self.turret_component.set_angle(bs.tilt_angle)
         if self.tilt_component.at_angle():
             self.next_state("tracking")
 
