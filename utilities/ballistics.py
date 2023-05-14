@@ -25,9 +25,10 @@ class BallisticsSolution:
 def calculate_ballistics(
     robot_pose: Pose2d, target_position: Translation3d
 ) -> BallisticsSolution:
-    delta = (target_position.y - robot_pose.y, target_position.x - robot_pose.x)
-    distance = math.hypot(delta[0], delta[1])
-    azimuth = math.atan2(delta[0], delta[1])
+    dy = target_position.y - robot_pose.y
+    dx = target_position.x - robot_pose.x
+    distance = math.hypot(dy, dx)
+    azimuth = math.atan2(dy, dx)
     turret_angle = constrain_angle(azimuth - robot_pose.rotation().radians())
     # We have to have different lookup tables for high, mid and low goals
     if target_position.z < 0.30:
