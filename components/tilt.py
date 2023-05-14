@@ -16,6 +16,7 @@ MAX_ANGULAR_ACCELERATION: float = 0.5
 POSITIVE_SOFT_LIMIT_ANGLE: float = math.radians(67)
 NEGATIVE_SOFT_LIMIT_ANGLE: float = math.radians(-67)
 TILT_ENCODER_ANGLE_OFFSET: float = 0.9012
+MAX_ANGLE: float = math.radians(60)
 
 
 class Tilt:
@@ -55,6 +56,9 @@ class Tilt:
 
     def goto_intaking(self) -> None:
         self.set_angle(INTAKING_ANGLE)
+
+    def goto_pre_intake(self) -> None:
+        self.set_angle(MAX_ANGLE)
 
     @feedback
     def at_angle(self) -> bool:
