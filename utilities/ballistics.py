@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import math
 from dataclasses import dataclass
 from enum import Enum
@@ -11,6 +13,32 @@ class GoalHeight(Enum):
     HIGH = 2
     MID = 1
     LOW = 0
+
+    def up(self) -> GoalHeight:
+        if self is GoalHeight.LOW:
+            return GoalHeight.MID
+        return GoalHeight.HIGH
+
+    def down(self) -> GoalHeight:
+        if self is GoalHeight.HIGH:
+            return GoalHeight.MID
+        return GoalHeight.LOW
+
+
+class GridColumn(Enum):
+    LEFT = -1
+    CENTRE = 0
+    RIGHT = 1
+
+    def left(self) -> GridColumn:
+        if self is GridColumn.RIGHT:
+            return GridColumn.CENTRE
+        return GridColumn.LEFT
+
+    def right(self) -> GridColumn:
+        if self is GridColumn.LEFT:
+            return GridColumn.CENTRE
+        return GridColumn.RIGHT
 
 
 @dataclass

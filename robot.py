@@ -41,7 +41,12 @@ class Robot(magicbot.MagicRobot):
     def createObjects(self) -> None:
         self.data_log = wpilib.DataLogManager.getLog()
 
+        self.event_loop = wpilib.event.EventLoop()
         self.gamepad = wpilib.XboxController(0)
+        self.pov_up = self.gamepad.POVUp(self.event_loop)
+        self.pov_left = self.gamepad.POVLeft(self.event_loop)
+        self.pov_down = self.gamepad.POVDown(self.event_loop)
+        self.pov_right = self.gamepad.POVRight(self.event_loop)
 
         self.field = wpilib.Field2d()
         wpilib.SmartDashboard.putData(self.field)
@@ -55,6 +60,14 @@ class Robot(magicbot.MagicRobot):
         # Relative to turret centre
         self.rear_localiser_pos = Translation3d(-0.05, 0.0, 0.25)
         self.rear_localiser_rot = Rotation3d.fromDegrees(0.0, 0.0, 180.0)
+
+    def robotInit(self) -> None:
+        super().robotInit()
+        # Bind events to component methods after components are created.
+        self.pov_up.rising().ifHigh(self.shooter_controller.select_up)
+        self.pov_down.rising().ifHigh(self.shooter_controller.select_down)
+        self.pov_left.rising().ifHigh(self.shooter_controller.select_left)
+        self.pov_right.rising().ifHigh(self.shooter_controller.select_right)
 
     def robotPeriodic(self) -> None:
         super().robotPeriodic()
@@ -89,6 +102,8 @@ class Robot(magicbot.MagicRobot):
         pass
 
     def teleopPeriodic(self) -> None:
+        self.event_loop.poll()
+
         drive_x = -rescale_js(self.gamepad.getLeftY(), 0.1) * self.MAX_SPEED
         drive_y = -rescale_js(self.gamepad.getLeftX(), 0.1) * self.MAX_SPEED
         drive_z = (

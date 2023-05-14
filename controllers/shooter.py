@@ -16,7 +16,7 @@ from components.shooter import Shooter
 from components.tilt import Tilt
 from components.turret import Turret
 from utilities import game
-from utilities.ballistics import GoalHeight, calculate_ballistics
+from utilities.ballistics import GoalHeight, GridColumn, calculate_ballistics
 
 
 class ShooterController(StateMachine):
@@ -30,6 +30,7 @@ class ShooterController(StateMachine):
 
     def __init__(self) -> None:
         self.goal_height_preference = GoalHeight.HIGH  # default preference
+        self.column_preference = GridColumn.CENTRE  # selected hybrid node
         self.goal_id = -1  # No valid selection until controller is run
 
     @state(first=True, must_finish=True)
@@ -107,14 +108,18 @@ class ShooterController(StateMachine):
         if self.goal_height_preference == GoalHeight.HIGH:
             depth = -(0.42 + 0.42 / 2.0)
             height = 0.45
+            breadth = 0.0
         elif self.goal_height_preference == GoalHeight.MID:
             depth = -0.42 / 2.0
             height = 0.05
+            breadth = 0.0
         else:
             depth = 0.42 / 2.0
             height = -0.45
+            # distance between centre of cone nodes in a grid row is 44"
+            breadth = 44.0 / 2.0 * 0.0254 * self.column_preference.value
 
-        translation = Translation3d(depth, 0.0, height)
+        translation = Translation3d(depth, breadth, height)
         transform = Transform3d(translation, Rotation3d())
 
         target = best_tag_position.transformBy(transform)
@@ -127,6 +132,20 @@ class ShooterController(StateMachine):
         if not self.shooter_component.is_loaded():
             self.engage()
 
+    def select_up(self) -> None:
+        self.goal_height_preference = self.goal_height_preference.up()
+
+    def select_down(self) -> None:
+        self.goal_height_preference = self.goal_height_preference.down()
+
+    def select_left(self) -> None:
+        self.goal_height_preference = GoalHeight.LOW
+        self.column_preference = self.column_preference.left()
+
+    def select_right(self) -> None:
+        self.goal_height_preference = GoalHeight.LOW
+        self.column_preference = self.column_preference.right()
+
     def prefer_high(self) -> None:
         self.goal_height_preference = GoalHeight.HIGH
 
@@ -137,9 +156,42 @@ class ShooterController(StateMachine):
         self.goal_height_preference = GoalHeight.LOW
 
     @feedback
+    def get_column_preference(self) -> str:
+        return self.column_preference.name
+
+    @feedback
     def get_goal_height_preference(self) -> str:
-        return str(self.goal_height_preference)
+        return self.goal_height_preference.name
 
     @feedback
     def get_goal_id(self) -> int:
         return self.goal_id
+
+    @feedback
+    def is_high_node_selected(self) -> bool:
+        return self.goal_height_preference is GoalHeight.HIGH
+
+    @feedback
+    def is_mid_node_selected(self) -> bool:
+        return self.goal_height_preference is GoalHeight.MID
+
+    @feedback
+    def is_left_hybrid_node_selected(self) -> bool:
+        return (
+            self.goal_height_preference is GoalHeight.LOW
+            and self.column_preference is GridColumn.LEFT
+        )
+
+    @feedback
+    def is_centre_hybrid_node_selected(self) -> bool:
+        return (
+            self.goal_height_preference is GoalHeight.LOW
+            and self.column_preference is GridColumn.CENTRE
+        )
+
+    @feedback
+    def is_right_hybrid_node_selected(self) -> bool:
+        return (
+            self.goal_height_preference is GoalHeight.LOW
+            and self.column_preference is GridColumn.RIGHT
+        )
