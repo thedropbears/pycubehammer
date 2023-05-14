@@ -3,15 +3,14 @@ from math import radians
 from ctre import WPI_TalonSRX
 from magicbot import tunable
 from rev import CANSparkMax
-from wpilib import DigitalInput
 from wpimath.controller import PIDController
 
-from ids import DioChannels, SparkMaxIds, TalonIds
+from ids import SparkMaxIds, TalonIds
 
 FLYWHEEL_SPEED_ERROR_TOLERANCE: float = radians(1)
 
-BACK_MOTOR_SHOOTING_SPEED: float = 1
-BACK_MOTOR_INTAKE_SPEED: float = -0.15
+BACK_MOTOR_SHOOTING_SPEED: float = -1
+BACK_MOTOR_INTAKE_SPEED: float = 0.15
 
 FLYWHEEL_INTAKE_SPEED: float = -80
 
@@ -37,8 +36,6 @@ class Shooter:
 
         self.top_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
         self.bottom_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
-
-        self.loaded_switch = DigitalInput(DioChannels.loaded_shooter)
 
     def set_flywheel_speed(
         self, top_flywheel_speed: float, bottom_flywheel_speed: float
@@ -78,8 +75,8 @@ class Shooter:
         self.back_motor_speed = BACK_MOTOR_INTAKE_SPEED
 
     def is_loaded(self) -> bool:
-        # return state of loaded switch
-        return not self.loaded_switch.get()
+        """Get whether the shooter is loaded."""
+        return bool(self.back_motor.isFwdLimitSwitchClosed())
 
     def stop(self) -> None:
         self.top_flywheel_speed = 0.0
