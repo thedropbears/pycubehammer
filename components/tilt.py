@@ -2,7 +2,7 @@ import math
 
 from magicbot import feedback
 from rev import CANSparkMax
-from wpilib import DutyCycleEncoder
+from wpilib import DutyCycleEncoder, SmartDashboard
 from wpimath.controller import ProfiledPIDControllerRadians
 from wpimath.trajectory import TrapezoidProfileRadians
 
@@ -13,8 +13,8 @@ INTAKING_ANGLE: float = math.radians(90)
 ANGLE_ERROR_TOLERANCE: float = math.radians(1)
 MAX_ANGULAR_VELOCITY: float = 12.0
 MAX_ANGULAR_ACCELERATION: float = 0.5
-POSITIVE_SOFT_LIMIT_ANGLE: float = math.radians(90)
-NEGATIVE_SOFT_LIMIT_ANGLE: float = math.radians(-90)
+POSITIVE_SOFT_LIMIT_ANGLE: float = math.radians(67)
+NEGATIVE_SOFT_LIMIT_ANGLE: float = math.radians(-67)
 TILT_ENCODER_ANGLE_OFFSET: float = 0.9012
 
 
@@ -33,8 +33,9 @@ class Tilt:
             maxVelocity=MAX_ANGULAR_VELOCITY, maxAcceleration=MAX_ANGULAR_ACCELERATION
         )
         self.rotation_controller = ProfiledPIDControllerRadians(
-            32.0, 0.0, 0.0, rotation_contraints
+            10.0, 0.0, 0.0, rotation_contraints
         )
+        SmartDashboard.putData("tilt_pid", self.rotation_controller)
 
     def set_angle(self, angle: float) -> None:
         # set the desired angle for the turret
