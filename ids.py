@@ -31,6 +31,7 @@ class SparkMaxIds(enum.IntEnum):
     intake_front = 3
 
     turret_motor = 1
+    tilt_motor = 2
     top_flywheel = 10
     bottom_flywheel = 11
 
@@ -50,3 +51,4 @@ class PwmChannels(enum.IntEnum):
 class DioChannels(enum.IntEnum):
     positive_turret_switch = 1
     negative_turret_switch = 2
+    tilt_absolute_encoder = 3
