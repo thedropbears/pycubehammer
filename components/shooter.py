@@ -4,6 +4,10 @@ from ctre import WPI_TalonSRX
 from magicbot import feedback, tunable
 from rev import CANSparkMax
 from wpimath.controller import PIDController
+from wpimath.controller import (
+    # TODO(davo): Change to radians after fixing RobotPy
+    SimpleMotorFeedforwardMeters as SimpleMotorFeedforward,
+)
 
 from ids import SparkMaxIds, TalonIds
 
@@ -34,6 +38,10 @@ class Shooter:
         self.top_flywheel_encoder = self.top_flywheel.getEncoder()
         self.bottom_flywheel_encoder = self.bottom_flywheel.getEncoder()
 
+        self.flywheel_feedforward = SimpleMotorFeedforward(
+            kS=0.015633, kV=0.12331, kA=0.0046012
+        )
+
         self.top_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
         self.bottom_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
 
@@ -48,9 +56,11 @@ class Shooter:
         # rotate back motors so the cube is picked up by the flywheels
         self.back_motor_speed = BACK_MOTOR_SHOOTING_SPEED
 
+    @feedback
     def top_flywheel_error(self) -> float:
         return self.top_flywheel_speed - self.top_flywheel_encoder.getVelocity()
 
+    @feedback
     def bottom_flywheel_error(self) -> float:
         return self.bottom_flywheel_speed - self.bottom_flywheel_encoder.getVelocity()
 
@@ -97,9 +107,16 @@ class Shooter:
         # bottom_voltage = self.bottom_flywheel_speed_controller.calculate(
         #     self.bottom_flywheel_encoder.getVelocity(), self.bottom_flywheel_speed
         # )
-        top_voltage = self.top_flywheel_speed / 600 * 12
-
-        bottom_voltage = self.bottom_flywheel_speed / 600 * 12
+        top_voltage = self.flywheel_feedforward.calculate(
+            currentVelocity=self.top_flywheel_encoder.getVelocity(),
+            nextVelocity=self.top_flywheel_speed,
+            dt=0.02,
+        )
+        bottom_voltage = self.flywheel_feedforward.calculate(
+            currentVelocity=self.bottom_flywheel_encoder.getVelocity(),
+            nextVelocity=self.bottom_flywheel_speed,
+            dt=0.02,
+        )
 
         back_voltage = self.back_motor_speed * 12
 
