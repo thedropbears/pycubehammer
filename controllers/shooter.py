@@ -38,7 +38,7 @@ class ShooterController(StateMachine):
         self.tilt_component.goto_pre_intake()
         self.turret_component.set_angle(0.0)
 
-        if self.turret_component.at_angle():
+        if self.turret_component.at_angle() and self.tilt_component.at_angle():
             self.next_state("intaking")
 
     @state(must_finish=True)
