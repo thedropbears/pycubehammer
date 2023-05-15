@@ -35,19 +35,27 @@ class ShooterController(StateMachine):
 
     @state(first=True, must_finish=True)
     def preparing_intake(self) -> None:
+        self.tilt_component.goto_pre_intake()
         self.turret_component.set_angle(0.0)
-        self.tilt_component.goto_intaking()
 
         if self.turret_component.at_angle() and self.tilt_component.at_angle():
             self.next_state("intaking")
 
     @state(must_finish=True)
     def intaking(self) -> None:
+        self.tilt_component.goto_intaking()
         self.intake_component.deploy()
         self.shooter_component.load()
 
         if self.shooter_component.is_loaded():
             self.intake_component.retract()
+            self.next_state("recovery")
+
+    @state(must_finish=True)
+    def recovery(self) -> None:
+        # raises tilt to move turret
+        self.tilt_component.goto_pre_intake()
+        if self.tilt_component.at_angle():
             self.next_state("tracking")
 
     @default_state
