@@ -33,10 +33,15 @@ class Shooter:
         self.bottom_flywheel = CANSparkMax(
             SparkMaxIds.bottom_flywheel, CANSparkMax.MotorType.kBrushless
         )
+        self.top_flywheel.setInverted(False)
+        self.bottom_flywheel.setInverted(True)
         self.back_motor = WPI_TalonSRX(TalonIds.shooter_back)
+        self.back_motor.setInverted(True)
 
         self.top_flywheel_encoder = self.top_flywheel.getEncoder()
+        self.top_flywheel_encoder.setVelocityConversionFactor(1 / 60)
         self.bottom_flywheel_encoder = self.bottom_flywheel.getEncoder()
+        self.bottom_flywheel_encoder.setVelocityConversionFactor(1 / 60)
 
         self.flywheel_feedforward = SimpleMotorFeedforward(
             kS=0.015633, kV=0.12331, kA=0.0046012
