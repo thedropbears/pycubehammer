@@ -45,6 +45,8 @@ class Shooter:
         self.top_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
         self.bottom_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
 
+        self._has_cube = False
+
     def set_flywheel_speed(
         self, top_flywheel_speed: float, bottom_flywheel_speed: float
     ) -> None:
@@ -87,7 +89,13 @@ class Shooter:
     @feedback
     def is_loaded(self) -> bool:
         """Get whether the shooter is loaded."""
-        return bool(self.back_motor.isRevLimitSwitchClosed())
+        return bool(self.back_motor.isRevLimitSwitchClosed() or self._has_cube)
+
+    def set_has_cube(self) -> None:
+        self._has_cube = True
+
+    def clear_has_cube(self) -> None:
+        self._has_cube = False
 
     def stop(self) -> None:
         self.top_flywheel_speed = 0.0
