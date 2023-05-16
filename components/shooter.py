@@ -14,9 +14,9 @@ from ids import SparkMaxIds, TalonIds
 FLYWHEEL_SPEED_ERROR_TOLERANCE: float = radians(1)
 
 BACK_MOTOR_SHOOTING_SPEED: float = 1
-BACK_MOTOR_INTAKE_SPEED: float = -0.15
+BACK_MOTOR_INTAKE_SPEED: float = -0.5
 
-FLYWHEEL_INTAKE_SPEED: float = -80
+FLYWHEEL_INTAKE_SPEED: float = -10
 
 
 class Shooter:
