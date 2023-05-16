@@ -1,14 +1,15 @@
 from math import radians
 
-from ctre import WPI_TalonFX, WPI_TalonSRX
+from ctre import WPI_TalonSRX
 from magicbot import feedback, tunable
+from rev import CANSparkMax
 from wpimath.controller import PIDController
 from wpimath.controller import (
     # TODO(davo): Change to radians after fixing RobotPy
     SimpleMotorFeedforwardMeters as SimpleMotorFeedforward,
 )
 
-from ids import TalonIds
+from ids import SparkMaxIds, TalonIds
 
 FLYWHEEL_SPEED_ERROR_TOLERANCE: float = radians(1)
 
@@ -26,14 +27,18 @@ class Shooter:
 
     def __init__(self) -> None:
         # create instances of hardware handles
-        self.top_flywheel = WPI_TalonFX(TalonIds.shooter_bottom)
-        self.bottom_flywheel = WPI_TalonFX(TalonIds.shooter_bottom)
+        self.top_flywheel = CANSparkMax(
+            SparkMaxIds.top_flywheel, CANSparkMax.MotorType.kBrushless
+        )
+        self.bottom_flywheel = CANSparkMax(
+            SparkMaxIds.bottom_flywheel, CANSparkMax.MotorType.kBrushless
+        )
         self.back_motor = WPI_TalonSRX(TalonIds.shooter_back)
 
-        self.top_flywheel_feedforward = SimpleMotorFeedforward(
-            kS=0.015633, kV=0.12331, kA=0.0046012
-        )
-        self.bottom_flywheel_feedforward = SimpleMotorFeedforward(
+        self.top_flywheel_encoder = self.top_flywheel.getEncoder()
+        self.bottom_flywheel_encoder = self.bottom_flywheel.getEncoder()
+
+        self.flywheel_feedforward = SimpleMotorFeedforward(
             kS=0.015633, kV=0.12331, kA=0.0046012
         )
 
@@ -53,14 +58,11 @@ class Shooter:
 
     @feedback
     def top_flywheel_error(self) -> float:
-        return self.top_flywheel_speed - self.top_flywheel.getSelectedSensorVelocity()
+        return self.top_flywheel_speed - self.top_flywheel_encoder.getVelocity()
 
     @feedback
     def bottom_flywheel_error(self) -> float:
-        return (
-            self.bottom_flywheel_speed
-            - self.bottom_flywheel.getSelectedSensorVelocity()
-        )
+        return self.bottom_flywheel_speed - self.bottom_flywheel_encoder.getVelocity()
 
     def top_flywheel_at_speed(self) -> bool:
         # return abs(self.top_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
@@ -105,13 +107,13 @@ class Shooter:
         # bottom_voltage = self.bottom_flywheel_speed_controller.calculate(
         #     self.bottom_flywheel_encoder.getVelocity(), self.bottom_flywheel_speed
         # )
-        top_voltage = self.top_flywheel_feedforward.calculate(
-            currentVelocity=self.top_flywheel.getSelectedSensorVelocity(),
+        top_voltage = self.flywheel_feedforward.calculate(
+            currentVelocity=self.top_flywheel_encoder.getVelocity(),
             nextVelocity=self.top_flywheel_speed,
             dt=0.02,
         )
-        bottom_voltage = self.bottom_flywheel_feedforward.calculate(
-            currentVelocity=self.bottom_flywheel.getSelectedSensorVelocity(),
+        bottom_voltage = self.flywheel_feedforward.calculate(
+            currentVelocity=self.bottom_flywheel_encoder.getVelocity(),
             nextVelocity=self.bottom_flywheel_speed,
             dt=0.02,
         )

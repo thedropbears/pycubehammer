@@ -68,8 +68,6 @@ def calculate_ballistics(
         # High goal
         bs = _get_high_solution(distance)
     bs.turret_angle = turret_angle
-    bs.top_flywheel_speed = 0
-    bs.bottom_flywheel_speed = 0
     return bs
 
 
