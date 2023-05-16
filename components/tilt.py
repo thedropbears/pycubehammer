@@ -10,7 +10,7 @@ from ids import DioChannels, SparkMaxIds
 from utilities.functions import clamp
 
 INTAKING_ANGLE: float = math.radians(90)
-ANGLE_ERROR_TOLERANCE: float = math.radians(1)
+ANGLE_ERROR_TOLERANCE: float = math.radians(5)
 MAX_ANGULAR_VELOCITY: float = 12.0
 MAX_ANGULAR_ACCELERATION: float = 2.5
 POSITIVE_SOFT_LIMIT_ANGLE: float = math.radians(67)
