@@ -17,6 +17,8 @@ class TalonIds(enum.IntEnum):
 
     intake_tunnel = 10
     shooter_back = 12
+    shooter_top = 13
+    shooter_bottom = 14
 
 
 @enum.unique
@@ -33,8 +35,6 @@ class SparkMaxIds(enum.IntEnum):
 
     turret_motor = 1
     tilt_motor = 2
-    top_flywheel = 10
-    bottom_flywheel = 11
 
 
 @enum.unique
