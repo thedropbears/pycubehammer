@@ -49,6 +49,7 @@ class ShooterController(StateMachine):
 
         if self.shooter_component.is_loaded():
             self.intake_component.retract()
+            self.shooter_component.set_has_cube()
             self.next_state("recovery")
 
     @state(must_finish=True)
@@ -74,6 +75,7 @@ class ShooterController(StateMachine):
     def shooting(self) -> None:
         self.update_component_setpoints()
         self.shooter_component.shoot()
+        self.shooter_component.clear_has_cube()
 
     def update_component_setpoints(self) -> None:
         position = self.get_target_position()

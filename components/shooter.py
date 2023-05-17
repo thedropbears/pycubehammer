@@ -14,9 +14,9 @@ from ids import SparkMaxIds, TalonIds
 FLYWHEEL_SPEED_ERROR_TOLERANCE: float = radians(1)
 
 BACK_MOTOR_SHOOTING_SPEED: float = 1
-BACK_MOTOR_INTAKE_SPEED: float = -0.15
+BACK_MOTOR_INTAKE_SPEED: float = -0.5
 
-FLYWHEEL_INTAKE_SPEED: float = -80
+FLYWHEEL_INTAKE_SPEED: float = -10
 
 
 class Shooter:
@@ -33,10 +33,15 @@ class Shooter:
         self.bottom_flywheel = CANSparkMax(
             SparkMaxIds.bottom_flywheel, CANSparkMax.MotorType.kBrushless
         )
+        self.top_flywheel.setInverted(False)
+        self.bottom_flywheel.setInverted(True)
         self.back_motor = WPI_TalonSRX(TalonIds.shooter_back)
+        self.back_motor.setInverted(True)
 
         self.top_flywheel_encoder = self.top_flywheel.getEncoder()
+        self.top_flywheel_encoder.setVelocityConversionFactor(1 / 60)
         self.bottom_flywheel_encoder = self.bottom_flywheel.getEncoder()
+        self.bottom_flywheel_encoder.setVelocityConversionFactor(1 / 60)
 
         self.flywheel_feedforward = SimpleMotorFeedforward(
             kS=0.015633, kV=0.12331, kA=0.0046012
@@ -44,6 +49,8 @@ class Shooter:
 
         self.top_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
         self.bottom_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
+
+        self._has_cube = False
 
     def set_flywheel_speed(
         self, top_flywheel_speed: float, bottom_flywheel_speed: float
@@ -87,7 +94,13 @@ class Shooter:
     @feedback
     def is_loaded(self) -> bool:
         """Get whether the shooter is loaded."""
-        return bool(self.back_motor.isRevLimitSwitchClosed())
+        return bool(self.back_motor.isRevLimitSwitchClosed() or self._has_cube)
+
+    def set_has_cube(self) -> None:
+        self._has_cube = True
+
+    def clear_has_cube(self) -> None:
+        self._has_cube = False
 
     def stop(self) -> None:
         self.top_flywheel_speed = 0.0
