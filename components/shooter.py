@@ -84,6 +84,8 @@ class Shooter:
             self.top_flywheel_at_speed()
             and self.bottom_flywheel_at_speed()
             and self.is_loaded()
+            and self.bottom_flywheel_speed > 0  # don't fire beyond max range
+            and self.top_flywheel_speed > 0
         )
 
     def load(self) -> None:

@@ -72,26 +72,26 @@ def calculate_ballistics(
 
 
 def _get_high_solution(target_range: float) -> BallisticsSolution:
-    ranges = [0.0, 1.0]
-    angles = [math.radians(45), math.radians(30)]
-    top_speeds = [100.0, 200.0]
-    bottom_speeds = [200.0, 300.0]
+    ranges = [0.0, 1.0, 5.0, 5.01]
+    angles = [math.radians(45), math.radians(30), math.radians(30), math.radians(30)]
+    top_speeds = [100.0, 200.0, 200.0, 0.0]
+    bottom_speeds = [200.0, 300.0, 300.0, 0.0]
     return _interp(target_range, ranges, angles, top_speeds, bottom_speeds)
 
 
 def _get_mid_solution(target_range: float) -> BallisticsSolution:
-    ranges = [0.0, 1.0]
-    angles = [math.radians(45), math.radians(30)]
-    top_speeds = [100.0, 200.0]
-    bottom_speeds = [200.0, 300.0]
+    ranges = [0.0, 1.0, 5.0, 5.01]
+    angles = [math.radians(45), math.radians(30), math.radians(30), math.radians(30)]
+    top_speeds = [100.0, 200.0, 200.0, 0.0]
+    bottom_speeds = [200.0, 300.0, 300.0, 0.0]
     return _interp(target_range, ranges, angles, top_speeds, bottom_speeds)
 
 
 def _get_low_solution(target_range: float) -> BallisticsSolution:
-    ranges = [0.0, 1.0]
-    angles = [math.radians(45), math.radians(30)]
-    top_speeds = [100.0, 200.0]
-    bottom_speeds = [200.0, 300.0]
+    ranges = [0.0, 1.0, 5.0, 5.01]
+    angles = [math.radians(45), math.radians(30), math.radians(30), math.radians(30)]
+    top_speeds = [100.0, 200.0, 200.0, 0.0]
+    bottom_speeds = [200.0, 300.0, 300.0, 0.0]
     return _interp(target_range, ranges, angles, top_speeds, bottom_speeds)
 
 
