@@ -24,6 +24,7 @@ class VisualLocaliser:
 
     rejected_in_row = tunable(0.0)
     last_pose_z = tunable(0.0, writeDefault=False)
+    range = tunable(0.0)
 
     def __init__(
         self,
@@ -80,6 +81,8 @@ class VisualLocaliser:
             if poses is None:
                 # tag doesn't exist
                 continue
+            self.range = target.getBestCameraToTarget().inverse().translation().norm()
+
             best_pose, alt_pose, self.last_pose_z = poses
             pose = choose_pose(
                 best_pose,

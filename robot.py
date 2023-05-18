@@ -53,12 +53,12 @@ class Robot(magicbot.MagicRobot):
 
         self.front_localiser_name = "cam_front"
         # Relative to turret centre
-        self.front_localiser_pos = Translation3d(0.05, 0.0, 0.25)
+        self.front_localiser_pos = Translation3d(0.05, 0.0, 0.83)
         self.front_localiser_rot = Rotation3d.fromDegrees(0.0, 0.0, 0.0)
 
         self.rear_localiser_name = "cam_rear"
         # Relative to turret centre
-        self.rear_localiser_pos = Translation3d(-0.05, 0.0, 0.25)
+        self.rear_localiser_pos = Translation3d(-0.05, 0.0, 0.83)
         self.rear_localiser_rot = Rotation3d.fromDegrees(0.0, 0.0, 180.0)
 
     def robotInit(self) -> None:

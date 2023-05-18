@@ -6,6 +6,7 @@ from enum import Enum
 
 from wpimath.geometry import Pose2d, Translation3d
 
+from components.turret import Turret
 from utilities.functions import constrain_angle, interpolate
 
 
@@ -47,13 +48,18 @@ class BallisticsSolution:
     tilt_angle: float
     top_flywheel_speed: float
     bottom_flywheel_speed: float
+    range: float
 
 
 def calculate_ballistics(
     robot_pose: Pose2d, target_position: Translation3d
 ) -> BallisticsSolution:
-    dy = target_position.y - robot_pose.y
-    dx = target_position.x - robot_pose.x
+    turret_trans = (
+        robot_pose.translation()
+        + Turret.TRANSLATION3D.toTranslation2d().rotateBy(robot_pose.rotation())
+    )
+    dy = target_position.y - turret_trans.y
+    dx = target_position.x - turret_trans.x
     distance = math.hypot(dy, dx)
     azimuth = math.atan2(dy, dx)
     turret_angle = constrain_angle(azimuth - robot_pose.rotation().radians())
@@ -110,5 +116,6 @@ def _interp(
         tilt_angle=angle,
         top_flywheel_speed=top_speed,
         bottom_flywheel_speed=bottom_speed,
+        range=target_range,
     )
     return bs
