@@ -91,6 +91,8 @@ class Robot(magicbot.MagicRobot):
         self.turret_component.maybe_rezero_off_limits_switches()
         self.turret_component.disabled_periodic()
 
+        self.tilt_component.disabled_periodic()
+
         self.chassis_component.update_odometry()
         self.front_localiser.execute()
         self.rear_localiser.execute()
