@@ -13,7 +13,7 @@ GEAR_RATIO: float = (10 / 1) * (4 / 1) * (140 / 18)
 ANGLE_ERROR_TOLERANCE: float = radians(1)
 MAX_ANGULAR_VELOCITY: float = 12.0
 MAX_ANGULAR_ACCELERATION: float = 2.0
-NEGATIVE_LIMIT_ANGLE: float = radians(-112)
+NEGATIVE_LIMIT_ANGLE: float = radians(-101)
 POSITIVE_LIMIT_ANGLE: float = radians(112)
 INDEX_SEARCH_VOLTAGE: float = 2.0
 
@@ -24,6 +24,7 @@ class Turret:
 
     goal_angle = tunable(0.0)
     index_search_positive = tunable(True)
+    index_found = tunable(False)
 
     TRANSLATION3D: Translation3d = Translation3d(-0.2, 0, 0.3)
 
@@ -47,8 +48,6 @@ class Turret:
         self.rotation_controller = ProfiledPIDControllerRadians(
             16.0, 0.05, 0.0, rotation_contraints
         )
-        # set index found var to false
-        self.index_found = False
 
     def set_angle(self, angle: float) -> None:
         # set the desired angle for the turret
@@ -75,10 +74,6 @@ class Turret:
     @feedback
     def at_negative_limit(self) -> bool:
         return not self.negative_limit_switch.get()
-
-    @feedback
-    def has_found_index(self) -> bool:
-        return self.index_found
 
     @feedback
     def position_error(self) -> bool:
@@ -126,7 +121,7 @@ class Turret:
         self.motor.setIdleMode(CANSparkMax.IdleMode.kCoast)
 
     def disabled_periodic(self) -> None:
-        if self.has_found_index():
+        if self.index_found:
             self.set_angle(self.get_angle())
             self.rotation_controller.reset(self.get_angle())
 

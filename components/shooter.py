@@ -1,5 +1,3 @@
-from math import radians
-
 from ctre import WPI_TalonSRX
 from magicbot import feedback, tunable
 from rev import CANSparkMax
@@ -11,7 +9,7 @@ from wpimath.controller import (
 
 from ids import SparkMaxIds, TalonIds
 
-FLYWHEEL_SPEED_ERROR_TOLERANCE: float = radians(1)
+FLYWHEEL_SPEED_ERROR_TOLERANCE: float = 10
 
 BACK_MOTOR_SHOOTING_SPEED: float = 1
 BACK_MOTOR_INTAKE_SPEED: float = -0.5
@@ -51,6 +49,14 @@ class Shooter:
         self.bottom_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
 
         self._has_cube = False
+        self._reset_last_flywheel_speeds()
+
+    def _reset_last_flywheel_speeds(self) -> None:
+        self._last_top_flywheel_speed = 0.0
+        self._last_bottom_flywheel_speed = 0.0
+
+    def on_disable(self) -> None:
+        self._reset_last_flywheel_speeds()
 
     def set_flywheel_speed(
         self, top_flywheel_speed: float, bottom_flywheel_speed: float
@@ -72,12 +78,10 @@ class Shooter:
         return self.bottom_flywheel_speed - self.bottom_flywheel_encoder.getVelocity()
 
     def top_flywheel_at_speed(self) -> bool:
-        # return abs(self.top_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
-        return True
+        return abs(self.top_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
 
     def bottom_flywheel_at_speed(self) -> bool:
-        # return abs(self.bottom_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
-        return True
+        return abs(self.bottom_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
 
     def is_ready(self) -> bool:
         return (
@@ -123,12 +127,12 @@ class Shooter:
         #     self.bottom_flywheel_encoder.getVelocity(), self.bottom_flywheel_speed
         # )
         top_voltage = self.flywheel_feedforward.calculate(
-            currentVelocity=self.top_flywheel_encoder.getVelocity(),
+            currentVelocity=self._last_top_flywheel_speed,
             nextVelocity=self.top_flywheel_speed,
             dt=0.02,
         )
         bottom_voltage = self.flywheel_feedforward.calculate(
-            currentVelocity=self.bottom_flywheel_encoder.getVelocity(),
+            currentVelocity=self._last_bottom_flywheel_speed,
             nextVelocity=self.bottom_flywheel_speed,
             dt=0.02,
         )
@@ -138,3 +142,6 @@ class Shooter:
         self.top_flywheel.setVoltage(top_voltage)
         self.bottom_flywheel.setVoltage(bottom_voltage)
         self.back_motor.setVoltage(back_voltage)
+
+        self._last_top_flywheel_speed = self.top_flywheel_speed
+        self._last_bottom_flywheel_speed = self.bottom_flywheel_speed
