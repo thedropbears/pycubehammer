@@ -4,6 +4,7 @@ from math import radians
 
 import magicbot
 import wpilib
+import wpilib.event
 from wpimath.geometry import (
     Pose2d,
     Rotation2d,
@@ -104,8 +105,6 @@ class Robot(magicbot.MagicRobot):
         pass
 
     def teleopPeriodic(self) -> None:
-        self.event_loop.poll()
-
         drive_x = -rescale_js(self.gamepad.getLeftY(), 0.1) * self.MAX_SPEED
         drive_y = -rescale_js(self.gamepad.getLeftX(), 0.1) * self.MAX_SPEED
         drive_z = (
@@ -117,6 +116,13 @@ class Robot(magicbot.MagicRobot):
             self.chassis_component.drive_local(drive_x, drive_y, drive_z)
         else:
             self.chassis_component.drive_field(drive_x, drive_y, drive_z)
+
+        if self.gamepad.getLeftBumperPressed():
+            self.shooter_controller.intake()
+        elif self.gamepad.getRightBumper():
+            self.shooter_controller.shoot()
+
+        self.event_loop.poll()
 
     def testInit(self) -> None:
         pass
