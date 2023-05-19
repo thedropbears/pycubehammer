@@ -51,6 +51,14 @@ class Shooter:
         self.bottom_flywheel_speed_controller = PIDController(1.0, 0.0, 0.0)
 
         self._has_cube = False
+        self._reset_last_flywheel_speeds()
+
+    def _reset_last_flywheel_speeds(self) -> None:
+        self._last_top_flywheel_speed = 0.0
+        self._last_bottom_flywheel_speed = 0.0
+
+    def on_disable(self) -> None:
+        self._reset_last_flywheel_speeds()
 
     def set_flywheel_speed(
         self, top_flywheel_speed: float, bottom_flywheel_speed: float
@@ -123,12 +131,12 @@ class Shooter:
         #     self.bottom_flywheel_encoder.getVelocity(), self.bottom_flywheel_speed
         # )
         top_voltage = self.flywheel_feedforward.calculate(
-            currentVelocity=self.top_flywheel_encoder.getVelocity(),
+            currentVelocity=self._last_top_flywheel_speed,
             nextVelocity=self.top_flywheel_speed,
             dt=0.02,
         )
         bottom_voltage = self.flywheel_feedforward.calculate(
-            currentVelocity=self.bottom_flywheel_encoder.getVelocity(),
+            currentVelocity=self._last_bottom_flywheel_speed,
             nextVelocity=self.bottom_flywheel_speed,
             dt=0.02,
         )
@@ -138,3 +146,6 @@ class Shooter:
         self.top_flywheel.setVoltage(top_voltage)
         self.bottom_flywheel.setVoltage(bottom_voltage)
         self.back_motor.setVoltage(back_voltage)
+
+        self._last_top_flywheel_speed = self.top_flywheel_speed
+        self._last_bottom_flywheel_speed = self.bottom_flywheel_speed
