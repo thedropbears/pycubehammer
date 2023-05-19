@@ -20,6 +20,7 @@ from components.tilt import Tilt
 from components.turret import Turret
 from components.vision import VisualLocaliser
 from controllers.shooter import ShooterController
+from utilities.game import is_red
 from utilities.scalers import rescale_js
 
 
@@ -111,6 +112,10 @@ class Robot(magicbot.MagicRobot):
             -rescale_js(self.gamepad.getRightX(), 0.1, exponential=2) * self.SPIN_RATE
         )
         local_driving = self.gamepad.getBButton()
+
+        if is_red():
+            drive_x = -drive_x
+            drive_y = -drive_y
 
         if local_driving:
             self.chassis_component.drive_local(drive_x, drive_y, drive_z)
