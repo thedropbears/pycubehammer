@@ -39,8 +39,8 @@ class SparkMaxIds(enum.IntEnum):
 
 @enum.unique
 class PhChannels(enum.IntEnum):
-    intake_piston_forward = 4
-    intake_piston_reverse = 5
+    intake_piston_forward = 0
+    intake_piston_reverse = 1
 
 
 @enum.unique
