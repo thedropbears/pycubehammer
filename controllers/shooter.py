@@ -63,6 +63,7 @@ class ShooterController(StateMachine):
 
     @default_state
     def tracking(self) -> None:
+        self.intake_component.retract()
         self.update_component_setpoints()
 
         if (
