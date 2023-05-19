@@ -1,5 +1,3 @@
-from math import radians
-
 from ctre import WPI_TalonSRX
 from magicbot import feedback, tunable
 from rev import CANSparkMax
@@ -11,7 +9,7 @@ from wpimath.controller import (
 
 from ids import SparkMaxIds, TalonIds
 
-FLYWHEEL_SPEED_ERROR_TOLERANCE: float = radians(1)
+FLYWHEEL_SPEED_ERROR_TOLERANCE: float = 10
 
 BACK_MOTOR_SHOOTING_SPEED: float = 1
 BACK_MOTOR_INTAKE_SPEED: float = -0.5
@@ -80,12 +78,10 @@ class Shooter:
         return self.bottom_flywheel_speed - self.bottom_flywheel_encoder.getVelocity()
 
     def top_flywheel_at_speed(self) -> bool:
-        # return abs(self.top_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
-        return True
+        return abs(self.top_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
 
     def bottom_flywheel_at_speed(self) -> bool:
-        # return abs(self.bottom_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
-        return True
+        return abs(self.bottom_flywheel_error()) < FLYWHEEL_SPEED_ERROR_TOLERANCE
 
     def is_ready(self) -> bool:
         return (
