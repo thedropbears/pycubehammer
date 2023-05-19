@@ -54,7 +54,16 @@ class Tilt:
         0 is the shooter pointing upwards along the vertical axis,
         positive downwards along the front of the shooter.
         """
-        return self.absolute_encoder.getDistance()
+        # We have an issue caused by wrapping when the mechanism
+        # is initialised in the wrong place.
+        # We can't actually move more than a full revolution,
+        # so we can force it to the right range.
+        angle = self.absolute_encoder.getDistance()
+        while angle > math.radians(100):  # Measured max is 98.8 deg
+            angle -= math.pi
+        while angle < math.radians(-80):  # Measured min is -78.6 deg
+            angle += math.pi
+        return angle
 
     def goto_intaking(self) -> None:
         self.goal_angle = INTAKING_ANGLE
@@ -67,6 +76,9 @@ class Tilt:
         current_angle = self.get_angle()
         # This could also be done inside the motor controller depending on how it works
         return abs(current_angle - self.goal_angle) < ANGLE_ERROR_TOLERANCE
+
+    def disabled_periodic(self) -> None:
+        self.rotation_controller.reset(self.get_angle())
 
     def execute(self) -> None:
         current_angle = self.get_angle()

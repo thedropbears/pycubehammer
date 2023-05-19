@@ -6,6 +6,7 @@ from magicbot import (
     feedback,
     state,
     timed_state,
+    tunable,
     will_reset_to,
 )
 from wpimath.geometry import Rotation3d, Transform3d, Translation3d
@@ -27,6 +28,7 @@ class ShooterController(StateMachine):
     turret_component: Turret
 
     try_shoot = will_reset_to(False)
+    range = tunable(0.0)
 
     def __init__(self) -> None:
         self.goal_height_preference = GoalHeight.HIGH  # default preference
@@ -80,6 +82,7 @@ class ShooterController(StateMachine):
     def update_component_setpoints(self) -> None:
         position = self.get_target_position()
         bs = calculate_ballistics(self.chassis_component.get_pose(), position)
+        self.range = bs.range
         # Check to see if we need to flip the shooter around
         # If we are beyond the turret endpoints we have to flip
         if bs.turret_angle < Turret.NEGATIVE_SOFT_LIMIT_ANGLE:
