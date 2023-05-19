@@ -64,7 +64,7 @@ class ShooterController(StateMachine):
     @default_state
     def tracking(self) -> None:
         self.intake_component.retract()
-        self.update_component_setpoints()
+        self.update_component_setpoints(run_shooter=self.shooter_component.is_loaded())
 
         if (
             self.try_shoot
@@ -76,11 +76,11 @@ class ShooterController(StateMachine):
 
     @timed_state(must_finish=True, duration=1.0)
     def shooting(self) -> None:
-        self.update_component_setpoints()
+        self.update_component_setpoints(run_shooter=True)
         self.shooter_component.shoot()
         self.shooter_component.clear_has_cube()
 
-    def update_component_setpoints(self) -> None:
+    def update_component_setpoints(self, run_shooter: bool) -> None:
         position = self.get_target_position()
         bs = calculate_ballistics(self.chassis_component.get_pose(), position)
         self.range = bs.range
@@ -107,7 +107,7 @@ class ShooterController(StateMachine):
         self.tilt_component.set_angle(bs.tilt_angle)
         # We can be tracking the targets even if we don't have a cube
         # No need to run the flywheels if we can't shoot
-        if self.shooter_component.is_loaded():
+        if run_shooter:
             self.shooter_component.set_flywheel_speed(
                 bs.top_flywheel_speed, bs.bottom_flywheel_speed
             )
