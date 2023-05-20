@@ -27,6 +27,7 @@ class Tilt:
             SparkMaxIds.tilt_motor, CANSparkMax.MotorType.kBrushless
         )
         self.motor.setIdleMode(CANSparkMax.IdleMode.kBrake)
+        self.motor.setSmartCurrentLimit(stallLimit=20, freeLimit=40, limitRPM=60)
 
         self.absolute_encoder = DutyCycleEncoder(DioChannels.tilt_absolute_encoder)
         self.absolute_encoder.setDistancePerRotation(-math.pi)
