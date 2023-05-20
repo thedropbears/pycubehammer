@@ -1,4 +1,4 @@
-from magicbot import AutonomousStateMachine, state, timed_state
+from magicbot import AutonomousStateMachine, state, timed_state, tunable
 
 from components.chassis import Chassis
 from components.shooter import Shooter
@@ -13,6 +13,8 @@ class ShootDrive(AutonomousStateMachine):
     shooter_component: Shooter
     shooter_controller: ShooterController
 
+    vx = tunable(2.0)
+
     @state(first=True)
     def shooting(self) -> None:
         self.shooter_controller.shoot()
@@ -24,5 +26,5 @@ class ShootDrive(AutonomousStateMachine):
 
     @timed_state(duration=1.0)
     def driving(self) -> None:
-        vx = -1 if is_red() else 1
+        vx = -self.vx if is_red() else self.vx
         self.chassis_component.drive_field(vx, 0, 0)
