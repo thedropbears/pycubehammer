@@ -33,8 +33,12 @@ class Shooter:
         )
         self.top_flywheel.setInverted(False)
         self.bottom_flywheel.setInverted(True)
+        self.top_flywheel.setSmartCurrentLimit(40)
+        self.bottom_flywheel.setSmartCurrentLimit(40)
+
         self.back_motor = WPI_TalonSRX(TalonIds.shooter_back)
         self.back_motor.setInverted(True)
+        self.back_motor.configContinuousCurrentLimit(20)
 
         self.top_flywheel_encoder = self.top_flywheel.getEncoder()
         self.top_flywheel_encoder.setVelocityConversionFactor(1 / 60)
