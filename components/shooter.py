@@ -14,14 +14,14 @@ FLYWHEEL_SPEED_ERROR_TOLERANCE: float = 10
 BACK_MOTOR_SHOOTING_SPEED: float = 1
 BACK_MOTOR_INTAKE_SPEED: float = -0.5
 
-FLYWHEEL_INTAKE_SPEED: float = -10
-
 
 class Shooter:
     # initialise motor speed
     top_flywheel_speed = tunable(0.0)
     bottom_flywheel_speed = tunable(0.0)
     back_motor_speed = tunable(0.0)
+
+    flywheel_intake_speed = tunable(-25)
 
     def __init__(self) -> None:
         # create instances of hardware handles
@@ -97,8 +97,8 @@ class Shooter:
         )
 
     def load(self) -> None:
-        self.top_flywheel_speed = FLYWHEEL_INTAKE_SPEED
-        self.bottom_flywheel_speed = FLYWHEEL_INTAKE_SPEED
+        self.top_flywheel_speed = self.flywheel_intake_speed
+        self.bottom_flywheel_speed = self.flywheel_intake_speed
         self.back_motor_speed = BACK_MOTOR_INTAKE_SPEED
 
     @feedback
