@@ -15,7 +15,7 @@ from components.chassis import Chassis
 from components.intake import Intake
 from components.shooter import Shooter
 from components.tilt import Tilt
-from components.turret import Turret
+from components.turret import ITurret, Turret
 from utilities import game
 from utilities.ballistics import GoalHeight, GridColumn, calculate_ballistics
 
@@ -25,7 +25,7 @@ class ShooterController(StateMachine):
     intake_component: Intake
     shooter_component: Shooter
     tilt_component: Tilt
-    turret_component: Turret
+    turret_component: ITurret
 
     try_shoot = will_reset_to(False)
     range = tunable(0.0)

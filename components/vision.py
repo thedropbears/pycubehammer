@@ -9,7 +9,7 @@ from photonvision import PhotonCamera, PhotonTrackedTarget
 from wpimath.geometry import Pose2d, Rotation3d, Transform3d, Translation3d
 
 from components.chassis import Chassis
-from components.turret import Turret
+from components.turret import ITurret, Turret
 from utilities.game import apriltag_layout
 
 
@@ -37,7 +37,7 @@ class VisualLocaliser:
         field: wpilib.Field2d,
         data_log: wpiutil.log.DataLog,
         chassis_component: Chassis,
-        turret_component: Turret,
+        turret_component: ITurret,
     ) -> None:
         self.camera = PhotonCamera(name)
         self.camera_rotation = rot

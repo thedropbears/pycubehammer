@@ -17,7 +17,7 @@ from components.chassis import Chassis
 from components.intake import Intake
 from components.shooter import Shooter
 from components.tilt import Tilt
-from components.turret import Turret
+from components.turret import ITurret
 from components.vision import VisualLocaliser
 from controllers.shooter import ShooterController
 from utilities.game import is_red
@@ -33,7 +33,7 @@ class Robot(magicbot.MagicRobot):
     intake_component: Intake
     shooter_component: Shooter
     tilt_component: Tilt
-    turret_component: Turret
+    turret_component: ITurret
     front_localiser: VisualLocaliser
     rear_localiser: VisualLocaliser
 
@@ -79,7 +79,7 @@ class Robot(magicbot.MagicRobot):
         )
         abs_turret_rotation = Rotation2d(
             self.chassis_component.get_pose().rotation().radians()
-            + self.turret_component.goal_angle
+            + self.turret_component.get_angle()
         )
         turret_pose = Pose2d(
             self.chassis_component.get_pose().translation(), abs_turret_rotation

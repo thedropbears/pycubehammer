@@ -18,7 +18,29 @@ POSITIVE_LIMIT_ANGLE: float = radians(112)
 INDEX_SEARCH_VOLTAGE: float = 2.0
 
 
-class Turret:
+class ITurret:
+    """The turret interface. Can be used to stub out turret behaviour entirely."""
+
+    def at_angle(self) -> bool:
+        return True
+
+    def get_angle(self) -> float:
+        return 0.0
+
+    def set_angle(self, angle: float) -> None:
+        pass
+
+    def disabled_periodic(self) -> None:
+        pass
+
+    def maybe_rezero_off_limits_switches(self) -> None:
+        pass
+
+    def execute(self) -> None:
+        pass
+
+
+class Turret(ITurret):
     POSITIVE_SOFT_LIMIT_ANGLE: float = POSITIVE_LIMIT_ANGLE - radians(5)
     NEGATIVE_SOFT_LIMIT_ANGLE: float = NEGATIVE_LIMIT_ANGLE + radians(5)
 
@@ -35,6 +57,8 @@ class Turret:
         )
         self.motor.setIdleMode(CANSparkMax.IdleMode.kBrake)
         self.motor.setInverted(False)
+        self.motor.setSmartCurrentLimit(10)
+
         self.positive_limit_switch = DigitalInput(DioChannels.positive_turret_switch)
         self.negative_limit_switch = DigitalInput(
             DioChannels.negative_turret_switch
