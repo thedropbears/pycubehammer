@@ -130,7 +130,7 @@ class Robot(magicbot.MagicRobot):
         self.event_loop.poll()
 
     def testInit(self) -> None:
-        pass
+        self.tilt_component.set_angle(self.tilt_component.get_angle())
 
     def testPeriodic(self) -> None:
         # Turret
