@@ -120,6 +120,9 @@ class Shooter:
     def is_loading(self) -> bool:
         return self.top_flywheel_speed < 0 and self.bottom_flywheel_speed < 0
 
+    def is_shooting(self) -> bool:
+        return self.back_motor_speed > 0
+
     def execute(self) -> None:
         if self.is_loaded() and self.is_loading():
             self.stop()
