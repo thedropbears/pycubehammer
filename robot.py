@@ -37,7 +37,7 @@ class Robot(magicbot.MagicRobot):
     front_localiser: VisualLocaliser
     rear_localiser: VisualLocaliser
 
-    SPIN_RATE = 4
+    SPIN_RATE = 4.0
     MAX_SPEED = magicbot.tunable(Chassis.max_wheel_speed * 0.95)
 
     def createObjects(self) -> None:
@@ -106,11 +106,15 @@ class Robot(magicbot.MagicRobot):
         pass
 
     def teleopPeriodic(self) -> None:
-        drive_x = -rescale_js(self.gamepad.getLeftY(), 0.1) * self.MAX_SPEED
-        drive_y = -rescale_js(self.gamepad.getLeftX(), 0.1) * self.MAX_SPEED
-        drive_z = (
-            -rescale_js(self.gamepad.getRightX(), 0.1, exponential=2) * self.SPIN_RATE
-        )
+        max_speed = self.MAX_SPEED
+        spin_rate = self.SPIN_RATE
+        if self.gamepad.getYButton():
+            max_speed /= 2
+            spin_rate /= 2
+
+        drive_x = -rescale_js(self.gamepad.getLeftY(), 0.1) * max_speed
+        drive_y = -rescale_js(self.gamepad.getLeftX(), 0.1) * max_speed
+        drive_z = -rescale_js(self.gamepad.getRightX(), 0.1, exponential=2) * spin_rate
         local_driving = self.gamepad.getBButton()
 
         if is_red():
