@@ -21,7 +21,7 @@ from components.turret import ITurret
 from components.vision import VisualLocaliser
 from controllers.shooter import ShooterController
 from utilities.game import is_red
-from utilities.scalers import rescale_js
+from utilities.scalers import rescale_js, scale_value
 
 
 class Robot(magicbot.MagicRobot):
@@ -106,11 +106,10 @@ class Robot(magicbot.MagicRobot):
         pass
 
     def teleopPeriodic(self) -> None:
-        max_speed = self.MAX_SPEED
-        spin_rate = self.SPIN_RATE
-        if self.gamepad.getYButton():
-            max_speed /= 2
-            spin_rate /= 2
+        # Scale speeds so fully depressing a trigger is half speed.
+        speed_multiplier = scale_value(self.gamepad.getRightTriggerAxis(), 0, 1, 1, 0.5)
+        max_speed = self.MAX_SPEED * speed_multiplier
+        spin_rate = self.SPIN_RATE * speed_multiplier
 
         drive_x = -rescale_js(self.gamepad.getLeftY(), 0.1) * max_speed
         drive_y = -rescale_js(self.gamepad.getLeftX(), 0.1) * max_speed
