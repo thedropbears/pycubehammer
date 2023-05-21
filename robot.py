@@ -129,6 +129,11 @@ class Robot(magicbot.MagicRobot):
             self.shooter_controller.intake()
         elif self.gamepad.getRightBumper():
             self.shooter_controller.shoot()
+        elif (
+            self.gamepad.getBackButtonPressed()
+            and not self.shooter_component.is_shooting()
+        ):
+            self.shooter_controller.next_state("recovery")
 
         self.event_loop.poll()
 

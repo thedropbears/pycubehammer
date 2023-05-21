@@ -56,6 +56,7 @@ class ShooterController(StateMachine):
 
     @state(must_finish=True)
     def recovery(self) -> None:
+        self.intake_component.retract()
         # raises tilt to move turret
         self.tilt_component.goto_pre_intake()
         if self.tilt_component.at_angle():
