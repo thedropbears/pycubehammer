@@ -252,7 +252,7 @@ class Chassis:
         self.module_objs: list[wpilib.FieldObject2d] = []
         for idx, _module in enumerate(self.modules):
             self.module_objs.append(self.field.getObject("s_module_" + str(idx)))
-        self.set_pose(Pose2d(4, 3.5, Rotation2d.fromDegrees(180)))
+        self.set_pose(Pose2d(4, Chassis.WIDTH / 2, Rotation2d()))
 
     def drive_field(self, vx: float, vy: float, omega: float) -> None:
         """Field oriented drive commands"""
