@@ -28,8 +28,13 @@ def get_team() -> wpilib.DriverStation.Alliance:
     return wpilib.DriverStation.getAlliance()
 
 
+def get_grid_tag_ids() -> tuple[TagId, TagId, TagId]:
+    """Get our alliance's grids' tag IDs."""
+    return (1, 2, 3) if is_red() else (6, 7, 8)
+
+
 def find_closest_tag(robot_pose: Pose2d) -> tuple[Pose3d, int]:
-    tag_ids: list[TagId] = [1, 2, 3] if is_red() else [6, 7, 8]
+    tag_ids = get_grid_tag_ids()
 
     # Use the first tag to set a baseline for distance
     best_id = tag_ids[0]

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from math import radians
+from typing import Optional
 
 import magicbot
 import wpilib
@@ -9,6 +10,7 @@ from wpimath.geometry import (
     Pose2d,
     Rotation2d,
     Rotation3d,
+    Transform2d,
     Translation2d,
     Translation3d,
 )
@@ -20,7 +22,7 @@ from components.tilt import Tilt
 from components.turret import ITurret
 from components.vision import VisualLocaliser
 from controllers.shooter import ShooterController
-from utilities.game import is_red
+from utilities.game import TagId, get_fiducial_pose, get_grid_tag_ids, is_red
 from utilities.scalers import rescale_js, scale_value
 
 
@@ -90,6 +92,19 @@ class Robot(magicbot.MagicRobot):
         pass
 
     def disabledPeriodic(self) -> None:
+        tag_id: Optional[TagId] = None
+        if self.gamepad.getXButtonPressed():
+            tag_id = get_grid_tag_ids()[0]
+        if self.gamepad.getYButtonPressed():
+            tag_id = get_grid_tag_ids()[1]
+        if self.gamepad.getBButtonPressed():
+            tag_id = get_grid_tag_ids()[2]
+
+        if tag_id is not None and self.gamepad.getLeftTriggerAxis() > 0.5:
+            bumper_up_trans = Transform2d(0.42 + Chassis.LENGTH / 2, 0, 0)
+            pose = get_fiducial_pose(tag_id).toPose2d() + bumper_up_trans
+            self.chassis_component.set_pose(pose)
+
         self.turret_component.maybe_rezero_off_limits_switches()
         self.turret_component.disabled_periodic()
 
